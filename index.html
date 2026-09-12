@@ -11,7 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
   <style>
-    /* --- (mantuve tu CSS exactamente como estaba) --- */
     :root {
       --bg-dark: #06050c;
       --panel-glass: rgba(18, 14, 32, 0.65);
@@ -24,13 +23,21 @@
       --text-main: #f0edf6;
       --text-muted: #8c85ad;
       
+      /* Multilayer Glow Refinado */
       --glow-accent: 0 0 10px rgba(255, 42, 117, 0.4), 0 0 40px rgba(255, 42, 117, 0.1);
       --chroma-speed: 5s;
+
+      /* Velocidad de rotación de transmisión cuántica multilingüe */
       --transmission-speed: 18000ms;
+
+      /* Coordenadas dinámicas de puntero para hover */
       --mouse-x: 50%;
       --mouse-y: 50%;
     }
 
+    /* =========================================================
+       ESQUINAS 100% CUADRADAS (ESTILO OPERA GX)
+       ========================================================= */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -38,12 +45,16 @@
       border-radius: 0 !important;
     }
 
+    /* =========================================================
+       TRES TEMAS DE COLOR AISLADOS Y MAPEADOS
+       ========================================================= */
     @property --pastel-hue {
       syntax: '<angle>';
       initial-value: 0deg;
       inherits: false;
     }
 
+    /* Tema 2: DE COLORES PASTEL (Chroma Pastel) */
     body.theme-pastel {
       --pastel-hue: 0deg;
       --neon-pink: hsl(calc(340deg + var(--pastel-hue)), 75%, 82%);
@@ -62,6 +73,7 @@
       100% { --pastel-hue: 360deg; }
     }
 
+    /* Tema 3: RGB MODE */
     body.theme-rgb {
       --neon-pink: #ff0000;
       --cyber-violet: #00ff00;
@@ -87,6 +99,7 @@
       transition: background-color 0.5s ease;
     }
 
+    /* TEXTURA SUTIL DE LÍNEAS DE ESCANEO (SCANLINES) */
     .scanlines {
       position: fixed;
       top: 0;
@@ -105,6 +118,7 @@
       opacity: 0.6;
     }
 
+    /* Fondo Canvas Partículas */
     #space-canvas {
       position: fixed;
       top: 0;
@@ -121,9 +135,11 @@
       padding: 2rem 1.5rem;
     }
 
+    /* CORCHETES VECTORIALES EN ESQUINAS HUD (TECH CROP MARKS) */
     .hud-corners {
       position: relative;
     }
+    
     .hud-corner-t-left,
     .hud-corner-t-right,
     .hud-corner-b-left,
@@ -150,6 +166,9 @@
       border-color: var(--neon-pink);
     }
 
+    /* =========================================================
+       RESPLANDOR REACTIVO SEGUIDOR DE PUNTERO (SPOTLIGHT EFFECT)
+       ========================================================= */
     .archive-card,
     .voice-module,
     .radar-module,
@@ -189,6 +208,7 @@
       opacity: 1;
     }
 
+    /* HUD TOP BAR - TELEMETRÍA Y CONTROLES */
     .status-bar {
       display: flex;
       flex-wrap: wrap;
@@ -238,6 +258,7 @@
       font-weight: bold;
     }
 
+    /* BOTONES CON ANILLO DE EXPANSIÓN CONCÉNTRICO (HUD PULSE WAVE) */
     .theme-toggle-btn, .year-btn, .pin-btn, .voice-play-btn, .ext-link-btn {
       position: relative;
       overflow: hidden;
@@ -277,6 +298,7 @@
       box-shadow: 0 0 15px var(--neon-pink);
     }
 
+    /* HERO SECTION */
     .hero-section {
       text-align: center;
       margin-bottom: 2.5rem;
@@ -312,6 +334,7 @@
       line-height: 1.6;
     }
 
+    /* BARRA DE NAVEGACIÓN Y FILTRADO POR AÑOS */
     .year-filter-wrapper {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(18, 14, 32, 0.6) 100%);
       border: 1px solid var(--panel-border);
@@ -362,6 +385,7 @@
       box-shadow: 0 0 15px rgba(255, 42, 117, 0.3);
     }
 
+    /* COMPONENTE 1: MONITOR DE SINCRONÍA VITAL (ECG SYNC) */
     .ecg-sync-container {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(18, 14, 32, 0.75) 100%);
       backdrop-filter: blur(16px);
@@ -439,6 +463,7 @@
     .node-color-aru { width: 10px; height: 3px; background: var(--neon-pink); box-shadow: 0 0 6px var(--neon-pink); }
     .node-color-mty { width: 10px; height: 3px; background: var(--soft-rose); box-shadow: 0 0 6px var(--soft-rose); }
 
+    /* MÓDULOS SECUNDARIOS DE DOS COLUMNAS (RADAR + VOZ) */
     .tech-modules-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -446,6 +471,7 @@
       margin-bottom: 2.5rem;
     }
 
+    /* COMPONENTE 2: TERMINAL DE TRANSMISIONES DE VOZ */
     .voice-module {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(18, 14, 32, 0.8) 100%);
       backdrop-filter: blur(16px);
@@ -545,6 +571,7 @@
       position: relative;
     }
 
+    /* COMPONENTE 3: RADAR DE COORDENADAS PARATÁCTICO */
     .radar-module {
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(18, 14, 32, 0.8) 100%);
       backdrop-filter: blur(16px);
@@ -640,6 +667,7 @@
     .node-aru { bottom: 20%; left: 12%; }
     .node-mty { top: 20%; right: 12%; color: var(--soft-rose); border-color: rgba(247, 202, 208, 0.3); }
 
+    /* MATRIZ DE TRANSMISIÓN MULTILINGÜE */
     .matrix-section {
       margin-bottom: 2.5rem;
     }
@@ -727,6 +755,7 @@
       opacity: 0.15;
     }
 
+    /* GRID DE ARCHIVOS PRINCIPALES (LOGS) */
     .archive-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -778,6 +807,7 @@
       opacity: 1;
     }
 
+    /* REGLA DE PRIORIDAD AUTOMÁTICA Y ESTILOS ANIVERSARIO (12-09) */
     .archive-card.anniversary-card {
       border: 2px solid var(--neon-pink) !important;
       box-shadow: 0 0 25px var(--neon-pink), inset 0 0 15px rgba(255, 42, 117, 0.25) !important;
@@ -878,6 +908,7 @@
       color: var(--text-muted);
     }
 
+    /* GALERÍA DE FOTOGRAMAS TÉRMICOS */
     .thermal-gallery-section {
       margin-bottom: 4rem;
     }
@@ -955,6 +986,7 @@
       justify-content: space-between;
     }
 
+    /* MODALES Y PANELES */
     .modal-backdrop {
       position: fixed;
       top: 0;
@@ -1090,6 +1122,7 @@
       font-weight: bold;
     }
 
+    /* FORMULARIO E INPUTS RÍGIDOS CMS */
     .pin-input-group {
       display: flex;
       flex-direction: column;
@@ -1147,12 +1180,12 @@
   <!-- FONDO ANIMADO DE PARTÍCULAS ESPACIALES -->
   <canvas id="space-canvas"></canvas>
 
-  <!-- REPRODUCTOR DE AUDIO -->
+  <!-- REPRODUCTOR DE AUDIO CON SOPORTE DE ORIGEN CRUZADO (CROSSORIGIN). Atributo loop eliminado dinámicamente mediante JS para permitir el Autoplay de la lista por Slots -->
   <audio id="bg-audio" crossorigin="anonymous" preload="auto"></audio>
 
   <div class="app-container">
     
-    <!-- BARRA SUPERIOR -->
+    <!-- BARRA SUPERIOR DE TELEMETRÍA Y MODO DE COLOR CON MARCOS HUD -->
     <header class="status-bar hud-corners">
       <span class="hud-corner-t-left"></span>
       <span class="hud-corner-t-right"></span>
@@ -1177,7 +1210,7 @@
       </div>
     </header>
 
-    <!-- HERO -->
+    <!-- SECCIÓN DE ENCABEZADO -->
     <section class="hero-section">
       <span class="hero-tag">GALERIA DIGITAL DE MI AMORCITO Y YO</span>
       <h1 class="hero-title">Nuestro Mundo</h1>
@@ -1186,7 +1219,7 @@
       </p>
     </section>
 
-    <!-- ECG -->
+    <!-- COMPONENTE 1: MONITOR DE SINCRONÍA VITAL (ECG SYNC) -->
     <div class="ecg-sync-container hud-corners">
       <span class="hud-corner-t-left"></span>
       <span class="hud-corner-t-right"></span>
@@ -1214,8 +1247,10 @@
       </div>
     </div>
 
-    <!-- RADAR + VOICE -->
+    <!-- MÓDULOS SECUNDARIOS DE DOS COLUMNAS (RADAR + VOZ) -->
     <div class="tech-modules-grid">
+      
+      <!-- COMPONENTE 2: RADAR DE COORDENADAS PARATÁCTICO -->
       <div class="radar-module hud-corners">
         <span class="hud-corner-t-left"></span>
         <span class="hud-corner-t-right"></span>
@@ -1229,17 +1264,20 @@
           <div class="radar-cross-x"></div>
           <div class="radar-cross-y"></div>
           <div class="radar-sweep"></div>
+          
           <svg class="radar-svg-overlay" viewBox="0 0 160 160">
             <path d="M 30,125 Q 80,30 130,35" fill="none" stroke="var(--neon-pink)" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.8"/>
             <circle r="3" fill="#00f0ff">
               <animateMotion path="M 30,125 Q 80,30 130,35" dur="3s" repeatCount="indefinite" />
             </circle>
           </svg>
+
           <span class="radar-node-label node-aru">[ARU-VEN]</span>
           <span class="radar-node-label node-mty">[MTY-MEX]</span>
         </div>
       </div>
 
+      <!-- COMPONENTE 3: TERMINAL DE TRANSMISIONES DE VOZ HOLOGRÁFICAS -->
       <div class="voice-module hud-corners">
         <span class="hud-corner-t-left"></span>
         <span class="hud-corner-t-right"></span>
@@ -1251,16 +1289,19 @@
         </div>
         <div class="voice-body">
           <button class="voice-play-btn" id="voice-btn" onclick="window.toggleVoicePlayback()">▶</button>
-          <div class="spectrum-container" id="spectrum-container"></div>
+          <div class="spectrum-container" id="spectrum-container">
+            <!-- Espectro de barras generado dinámicamente mediante JS -->
+          </div>
         </div>
         <div class="voice-footer">
           <span id="voice-status-display">STATUS: SIGNAL_LOCKED</span>
           <span id="voice-duration-display">DURATION: 00:48</span>
         </div>
       </div>
+
     </div>
 
-    <!-- MATRIX -->
+    <!-- COMPONENTE: MATRIZ DE TRANSMISIÓN MULTILINGÜE (8 TARJETAS RÍGIDAS) -->
     <section class="matrix-section">
       <div class="section-title-group" style="margin-bottom: 1.2rem;">
         <span class="hero-tag">MULTILINGUAL LOVE</span>
@@ -1334,7 +1375,7 @@
       </div>
     </section>
 
-    <!-- YEAR FILTER -->
+    <!-- BARRA DE FILTRADO POR AÑOS (DINÁMICA) -->
     <div class="year-filter-wrapper hud-corners">
       <span class="hud-corner-t-left"></span>
       <span class="hud-corner-t-right"></span>
@@ -1344,13 +1385,17 @@
         <span style="color: var(--neon-pink);">●</span>
         <span>BITÁCORA DE REGISTROS // FILTRO TEMPORAL</span>
       </div>
-      <nav class="year-nav" id="year-nav-container"></nav>
+      <nav class="year-nav" id="year-nav-container">
+        <!-- Generado dinámicamente -->
+      </nav>
     </div>
 
-    <!-- ARCHIVE GRID -->
-    <main class="archive-grid" id="archive-grid-container"></main>
+    <!-- REJILLA DE CARTAS Y ARCHIVOS (LOGS DINÁMICOS) -->
+    <main class="archive-grid" id="archive-grid-container">
+      <!-- Generado dinámicamente por JavaScript -->
+    </main>
 
-    <!-- THERMAL GALLERY -->
+    <!-- COMPONENTE 4: BÓVEDA DE FOTOGRAMAS TÉRMICOS -->
     <section class="thermal-gallery-section">
       <div class="section-title-group">
         <span class="hero-tag">GALERÍA VISUAL // SENSOR STREAM</span>
@@ -1379,7 +1424,7 @@
           <span class="hud-corner-b-right"></span>
           <div class="thermal-img-wrapper">
             <span class="thermal-overlay-code">CAM_LOG // 2025.09.12 // SIGNAL_STABLE</span>
-            <img src="img/Minecraft_2025-08-28-06-23-47.jpg" alt="Fotograma 2" class="thermal-img">
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop" alt="Fotograma 2" class="thermal-img">
           </div>
           <div class="thermal-caption">
             <span>CAPTURE_02.RAW</span>
@@ -1406,7 +1451,7 @@
 
   </div>
 
-  <!-- MODALS -->
+  <!-- MODAL DE LECTURA DIGITAL -->
   <div class="modal-backdrop" id="modal">
     <div class="modal-window hud-corners">
       <span class="hud-corner-t-left"></span>
@@ -1418,7 +1463,9 @@
         <span class="modal-tag" id="modal-tag">LOG // 000</span>
         <h2 class="modal-title" id="modal-title">Título</h2>
       </div>
-      <div class="modal-body" id="modal-body">Texto...</div>
+      <div class="modal-body" id="modal-body">
+        Texto...
+      </div>
       <div class="modal-footer-action" id="modal-footer-action" style="display: none;">
         <a href="#" target="_blank" rel="noopener noreferrer" id="modal-ext-btn" class="ext-link-btn">
           <span id="modal-ext-btn-label">ABRIR RECURSO EXTERNO</span>
@@ -1428,6 +1475,7 @@
     </div>
   </div>
 
+  <!-- MODAL PARA INGRESAR PIN / CÓDIGO DE DESBLOQUEO -->
   <div class="modal-backdrop" id="pin-modal">
     <div class="modal-window hud-corners" style="max-width: 420px; text-align: center;">
       <span class="hud-corner-t-left"></span>
@@ -1447,6 +1495,7 @@
     </div>
   </div>
 
+  <!-- MODAL DE AUTENTICACIÓN PARA EL CMS -->
   <div class="modal-backdrop" id="cms-auth-modal">
     <div class="modal-window hud-corners" style="max-width: 420px; text-align: center;">
       <span class="hud-corner-t-left"></span>
@@ -1466,6 +1515,7 @@
     </div>
   </div>
 
+  <!-- MODAL CMS EN PANTALLA (PANEL DE EDICIÓN Y CREACIÓN DIRECTA) -->
   <div class="modal-backdrop" id="cms-modal">
     <div class="modal-window hud-corners" style="max-width: 680px;">
       <span class="hud-corner-t-left"></span>
@@ -1532,13 +1582,33 @@
     </div>
   </div>
 
-  <script>
+  <!-- Firebase + lógica principal -->
+  <script type="module">
+    // ---------- Firebase imports (CDN modular) ----------
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import {
+      getFirestore, collection, getDocs, addDoc, updateDoc, doc
+    } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+
+    // ---------- Firebase config (tal como lo diste) ----------
+    const firebaseConfig = {
+      apiKey: "AIzaSyBx1j_UlQ4dTcVhH1qFIwRq0A6Ynxl97w0",
+      authDomain: "amorcito1209-cf81c.firebaseapp.com",
+      projectId: "amorcito1209-cf81c",
+      storageBucket: "amorcito1209-cf81c.firebasestorage.app",
+      messagingSenderId: "46648518991",
+      appId: "1:46648518991:web:f19e7734f7c2a240df7d3a",
+      measurementId: "G-3WYLC6V9RW"
+    };
+
+    // Inicializar Firebase y Firestore
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     // =========================================================
     // ESTRUCTURA DE DATOS INICIALES Y PERSISTENCIA (LOCALSTORAGE)
     // =========================================================
-
-    // NOTE: quité la limpieza automática del localStorage para que tus eventos guardados no se borren.
-    // (Anteriormente se removía localStorage al inicio; ahora preservamos los datos)
+    // Nota: quité el borrado automático de localStorage que causaba pérdida de datos.
 
     const defaultLogs = [
       {
@@ -1559,24 +1629,15 @@
     let activeYearFilter = 'ALL';
     let pendingUnlockLogId = null;
     let currentUploadedImageBase64 = null;
-    let cmsEditingLogId = null; // id del registro que estamos editando en el CMS (si aplica)
-
-    function loadLogsFromStorage() {
-      const stored = localStorage.getItem('cyber_romance_logs');
-      if (stored) {
-        try {
-          logsData = JSON.parse(stored);
-        } catch (e) {
-          logsData = [...defaultLogs];
-        }
-      } else {
-        logsData = [...defaultLogs];
-        saveLogsToStorage();
-      }
-    }
+    let cmsEditingLogId = null; // id lógico (ej. "LOG #2027-01")
+    // cada registro puede tener field 'docId' si está sincronizado con Firestore
 
     function saveLogsToStorage() {
-      localStorage.setItem('cyber_romance_logs', JSON.stringify(logsData));
+      try {
+        localStorage.setItem('cyber_romance_logs', JSON.stringify(logsData));
+      } catch (e) {
+        console.warn('No se pudo guardar en localStorage:', e);
+      }
     }
 
     // =========================================================
@@ -1599,6 +1660,49 @@
     }
 
     // =========================================================
+    // CARGA DE DATOS: se intenta Firestore primero, si falla uso localStorage
+    // =========================================================
+    async function loadLogsFromStorage() {
+      // Intentar cargar desde Firestore
+      try {
+        const snap = await getDocs(collection(db, 'logs'));
+        if (!snap.empty) {
+          const remote = [];
+          snap.forEach(d => {
+            const data = d.data();
+            // Aseguramos formato consistente (id, year, date, etc)
+            data.docId = d.id;
+            remote.push(data);
+          });
+          // Si encontramos datos en Firestore los usamos
+          logsData = remote;
+          saveLogsToStorage();
+          console.info('Logs cargados desde Firestore:', logsData.length);
+          return;
+        }
+      } catch (e) {
+        console.warn('Error leyendo Firestore (se usará localStorage si existe):', e);
+      }
+
+      // Si no hay datos en Firestore o hubo error, intentamos localStorage
+      const stored = localStorage.getItem('cyber_romance_logs');
+      if (stored) {
+        try {
+          logsData = JSON.parse(stored);
+          console.info('Logs cargados desde localStorage:', logsData.length);
+          return;
+        } catch (e) {
+          console.warn('Error parseando localStorage, cargando defaultLogs:', e);
+        }
+      }
+
+      // Si todo falla, cargamos default
+      logsData = [...defaultLogs];
+      saveLogsToStorage();
+      console.info('Cargando valores por defecto.');
+    }
+
+    // =========================================================
     // LÓGICA DE RENDERIZADO Y NAVEGACIÓN TEMPORAL (CMS + FILTROS)
     // =========================================================
     function renderLogs(filterYear = activeYearFilter) {
@@ -1608,18 +1712,19 @@
 
       let filtered = logsData.filter(log => {
         if (filterYear === 'ALL') return true;
-        return log.year === filterYear;
+        return (log.year || '') === filterYear;
       });
 
-      // Orden: aniversario 12-09 primero, luego por fecha (más reciente primero)
+      // Ordenar: Los registros con fecha de aniversario (12-09) van al inicio
       filtered.sort((a, b) => {
         const aIsAnniv = isAnniversaryDate(a.date);
         const bIsAnniv = isAnniversaryDate(b.date);
         if (aIsAnniv && !bIsAnniv) return -1;
         if (!aIsAnniv && bIsAnniv) return 1;
+        // si ambos son iguales respecto a aniversario, ordenamos por fecha si posible (más reciente primero)
         try {
-          const pa = a.date.split('/').reverse().join('-');
-          const pb = b.date.split('/').reverse().join('-');
+          const pa = (a.date || '').split('/').reverse().join('-');
+          const pb = (b.date || '').split('/').reverse().join('-');
           const da = new Date(pa);
           const db = new Date(pb);
           if (!isNaN(da) && !isNaN(db)) return db - da;
@@ -1633,17 +1738,17 @@
         const annivClass = isAnniv ? 'anniversary-card' : '';
         const lockedClass = log.locked ? 'locked' : '';
         
-        let clickAttr = '';
+        let actionSpan = '';
         if (log.isExternalPage) {
-          clickAttr = `onclick="window.location.href='${log.url}'"`;
+          actionSpan = `<span onclick="window.location.href='${log.url}'; event.stopPropagation();" style="cursor:pointer;">ABRIR ENLACE</span>`;
         } else if (log.locked) {
-          clickAttr = `onclick="window.openPinModal('${log.id}')"`; 
+          actionSpan = `<span onclick="window.openPinModal('${log.id}'); event.stopPropagation();" style="cursor:pointer;">INGRESAR CLAVE</span>`;
         } else {
-          clickAttr = `onclick="window.openArchiveById('${log.id}')"`; 
+          actionSpan = `<span onclick="window.openArchiveById('${log.id}'); event.stopPropagation();" style="cursor:pointer;">DESBLOQUEAR</span>`;
         }
 
         html += `
-          <article class="archive-card hud-corners ${annivClass} ${lockedClass}" data-year="${log.year}">
+          <article class="archive-card hud-corners ${annivClass} ${lockedClass}" data-year="${log.year || ''}">
             <span class="hud-corner-t-left"></span>
             <span class="hud-corner-t-right"></span>
             <span class="hud-corner-b-left"></span>
@@ -1653,23 +1758,23 @@
               ${isAnniv ? `<div class="anniversary-indicator">[REGISTRO VITAL // ANIVERSARIO 12-09]</div>` : ''}
               <div class="card-meta">
                 <span>${log.id}</span>
-                ${log.locked ? `<span class="card-badge">ENCRIPTADO</span>` : `<span class="card-date">${log.date}</span>`}
+                ${log.locked ? `<span class="card-badge">ENCRIPTADO</span>` : `<span class="card-date">${log.date || ''}</span>`}
               </div>
               ${log.image ? `
                 <div style="width:100%; height:140px; overflow:hidden; margin-bottom:1rem; border:1px solid var(--panel-border);">
-                  <img src="${log.image}" alt="${log.title}" style="width:100%; height:100%; object-fit:cover;">
+                  <img src="${log.image}" alt="${log.title || ''}" style="width:100%; height:100%; object-fit:cover;">
                 </div>
               ` : ''}
-              <h2 class="card-title">${log.title}</h2>
-              <p class="card-desc">${log.desc}</p>
+              <h2 class="card-title">${log.title || ''}</h2>
+              <p class="card-desc">${log.desc || ''}</p>
             </div>
             <div class="card-action">
               <button class="theme-toggle-btn" type="button" onclick="window.openCmsForEdit('${log.id}'); event.stopPropagation();">EDITAR</button>
-              <span ${clickAttr ? `${clickAttr} style="cursor:pointer;"` : ''}>${log.locked ? 'INGRESAR CLAVE' : (log.isExternalPage ? 'ABRIR ENLACE' : 'DESBLOQUEAR')}</span>
+              ${actionSpan}
               <span>${log.locked ? '🔒' : '→'}</span>
             </div>
-            <!-- overlay para click principal -->
-            <div style="position:absolute; inset:0; z-index:1;" ${clickAttr}></div>
+            <!-- Overlay click principal -->
+            <div style="position:absolute; inset:0; z-index:1;" onclick="(function(){ ${log.isExternalPage ? `window.location.href='${log.url}'` : (log.locked ? `window.openPinModal('${log.id}')` : `window.openArchiveById('${log.id}')`)} })()"></div>
           </article>
         `;
       });
@@ -1719,12 +1824,14 @@
     // LÓGICA CMS (CREACIÓN, CARGA DE IMÁGENES, AUTENTICACIÓN Y EDICIÓN)
     // =========================================================
     window.openCmsAuthModal = function() {
+      // Abre el modal de auth sin intención previa -> por defecto abriremos CMS en blanco
       sessionStorage.removeItem('cms_edit_target');
       sessionStorage.removeItem('cms_create_new');
       document.getElementById('cms-auth-pin').value = '';
       document.getElementById('cms-auth-modal').classList.add('active');
     };
 
+    // Abre el flujo de edición: guarda intención y solicita autenticación
     window.openCmsForEdit = function(id) {
       sessionStorage.setItem('cms_edit_target', id);
       sessionStorage.removeItem('cms_create_new');
@@ -1732,6 +1839,7 @@
       document.getElementById('cms-auth-modal').classList.add('active');
     };
 
+    // Abre el flujo de creación de nuevo registro
     window.openCmsForNew = function() {
       sessionStorage.setItem('cms_create_new', '1');
       sessionStorage.removeItem('cms_edit_target');
@@ -1739,6 +1847,7 @@
       document.getElementById('cms-auth-modal').classList.add('active');
     };
 
+    // Prepara el CMS en blanco para crear un registro nuevo
     function prepareCmsForNew() {
       cmsEditingLogId = null;
       document.getElementById('cms-title').value = '';
@@ -1755,6 +1864,7 @@
       if (cmsTitleElem) cmsTitleElem.innerText = 'Nuevo Registro de Bitácora';
     }
 
+    // Llena el formulario del CMS con los datos de un registro dado
     function fillCmsFormFromLog(logId) {
       const annivLog = logsData.find(l => l.id === logId) || null;
       if (annivLog) {
@@ -1777,6 +1887,7 @@
           currentUploadedImageBase64 = null;
           document.getElementById('cms-img-url').value = '';
         }
+        // Cambiar título del modal CMS a "Editar Registro"
         const cmsTitleElem = document.querySelector('#cms-modal .modal-title');
         if (cmsTitleElem) cmsTitleElem.innerText = 'Editar Registro';
       } else {
@@ -1799,6 +1910,7 @@
           fillCmsFormFromLog(target);
           sessionStorage.removeItem('cms_edit_target');
         } else {
+          // Si no hay intención explícita, abrimos CMS en blanco para crear
           prepareCmsForNew();
         }
 
@@ -1847,7 +1959,10 @@
       }
     });
 
-    window.saveNewLog = function() {
+    // =========================================================
+    // SAVE (create/update) -> sincroniza con Firestore y con localStorage
+    // =========================================================
+    window.saveNewLog = async function() {
       const title = document.getElementById('cms-title').value.trim();
       const dateStr = document.getElementById('cms-date').value.trim();
       const desc = document.getElementById('cms-desc').value.trim();
@@ -1871,17 +1986,18 @@
       const now = new Date();
       const exactTimeStr = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
 
-      // Si cmsEditingLogId está definido, actualizamos el registro existente
       if (cmsEditingLogId) {
+        // Editar registro existente
         const existingIndex = logsData.findIndex(l => l.id === cmsEditingLogId);
         if (existingIndex !== -1) {
-          // Mantener campos como locked, pin si existían
           const keep = {
             locked: logsData[existingIndex].locked || false,
             pin: logsData[existingIndex].pin || undefined,
-            isExternalPage: logsData[existingIndex].isExternalPage || undefined
+            isExternalPage: logsData[existingIndex].isExternalPage || undefined,
+            docId: logsData[existingIndex].docId || undefined
           };
-          logsData[existingIndex] = {
+
+          const updated = {
             ...logsData[existingIndex],
             year: year,
             date: dateStr,
@@ -1893,12 +2009,26 @@
             image: finalImg,
             locked: keep.locked,
             pin: keep.pin,
-            isExternalPage: keep.isExternalPage
+            isExternalPage: keep.isExternalPage,
+            id: logsData[existingIndex].id // conservar id lógico
           };
-          // Push to Firestore if function available
-          if (window.pushLogToFirestore) window.pushLogToFirestore(logsData[existingIndex]);
+
+          // Intentar actualizar Firestore si tiene docId
+          try {
+            if (keep.docId) {
+              const docRef = doc(db, 'logs', keep.docId);
+              await updateDoc(docRef, {
+                ...updated
+              });
+              updated.docId = keep.docId;
+            }
+          } catch (e) {
+            console.warn('Falló actualización en Firestore (se mantendrá en local):', e);
+          }
+
+          logsData[existingIndex] = updated;
         } else {
-          // Si no existe (caso raro), crear nuevo con id único
+          // Caso raro: crear nuevo con id único
           const newId = generateNewLogId(year);
           const newLog = {
             id: newId,
@@ -1912,8 +2042,14 @@
             locked: false,
             image: finalImg
           };
+          // Guardar en Firestore si posible
+          try {
+            const ref = await addDoc(collection(db, 'logs'), newLog);
+            newLog.docId = ref.id;
+          } catch (e) {
+            console.warn('No se pudo guardar en Firestore (se guardará localmente):', e);
+          }
           logsData.push(newLog);
-          if (window.pushLogToFirestore) window.pushLogToFirestore(newLog);
         }
       } else {
         // Crear nuevo registro con id único
@@ -1931,8 +2067,15 @@
           image: finalImg
         };
 
+        // Intentar guardar en Firestore
+        try {
+          const ref = await addDoc(collection(db, 'logs'), newLog);
+          newLog.docId = ref.id;
+        } catch (e) {
+          console.warn('No se pudo guardar en Firestore (se guardará localmente):', e);
+        }
+
         logsData.push(newLog);
-        if (window.pushLogToFirestore) window.pushLogToFirestore(newLog);
       }
 
       saveLogsToStorage();
@@ -1964,10 +2107,6 @@
         localStorage.removeItem('cyber_romance_logs');
         logsData = [...defaultLogs];
         saveLogsToStorage();
-        // push default to Firestore if available
-        if (window.pushLogToFirestore) {
-          logsData.forEach(l => window.pushLogToFirestore(l));
-        }
         window.updateYearFilters();
         renderLogs('ALL');
         window.closeModal('cms-modal');
@@ -2035,7 +2174,7 @@
     };
 
     // =========================================================
-    // MULTILINGUAL DB, AUDIO, ECG, UI helpers (mantuve tu lógica tal cual)
+    // BASE DE DATOS Y LÓGICA DE MATRIZ MULTILINGÜE (COMPLETA - MÁS DE 100 IDIOMAS)
     // =========================================================
     const multilingualDB = [
       { text: "Te amo / Te quiero", lang: "[ESPAÑOL - REGIÓN: ROMANCE]" },
@@ -2178,22 +2317,24 @@
       }, 2000);
     }
 
-    // AUDIO playlist & engine (mantuve tu implementación)
+    // =========================================================
+    // MOTOR WEB AUDIO API REACTIVO Y ESTRUCTURA DE PLAYLIST BY SLOTS
+    // =========================================================
     const voicePlaylist = [
       {
-        url: "https://dn711307.ca.archive.org/0/items/zimmer_202609/Zimmer.mp3",
+        url: "https://ia903100.us.archive.org/1/items/einaudi-zimmer/EINAUDI_%20ZIMMER.m4a",
         freq: "108.4 MHz",
         status: "SIGNAL_LOCKED",
         duration: "00:48"
       },
       {
-        url: "https://ia803101.us.archive.org/31/items/20-romantic-songs.org/Those%20Eyes_spotdown.org.mp3",
+        url: "https://ia803101.us.archive.org/31/items/20-romantic-songs.org/Mutation_spotdown.org.mp3",
         freq: "94.2 MHz",
         status: "QUANTUM_BEAM",
         duration: "01:12"
       },
       {
-        url: "https://ia903101.us.archive.org/31/items/20-romantic-songs.org/No%20Matter%20What_spotdown.org.mp3",
+        url: "https://ia803101.us.archive.org/31/items/20-romantic-songs.org/I%20Wanna%20Be%20Yours%20%28Violin%29_spotdown.org.mp3",
         freq: "102.1 MHz",
         status: "SYNC_STABLE",
         duration: "02:05"
@@ -2210,6 +2351,7 @@
     let isAudioEngineInitialized = false;
     let isAudioSourceConnected = false;
     
+    // Parámetros de Biometría
     let audioAmpFactor = 1.0;
     let targetAmpFactor = 1.0;
     let ecgStep = 0;
@@ -2221,11 +2363,12 @@
       if (!audioCtx) {
         audioCtx = new AudioContextClass();
         analyser = audioCtx.createAnalyser();
-        analyser.fftSize = 128;
+        analyser.fftSize = 128; // Resolución rápida de 64 bandas
         analyser.smoothingTimeConstant = 0.8;
         audioDataArray = new Uint8Array(analyser.frequencyBinCount);
       }
 
+      // BANDERA DE CONTROL: Conectar 'createMediaElementSource' ÚNICA VEZ
       if (!isAudioSourceConnected) {
         try {
           sourceNode = audioCtx.createMediaElementSource(bgAudio);
@@ -2262,7 +2405,7 @@
     };
 
     window.playAudio = function() {
-      initWebAudioEngine();
+      initWebAudioEngine(); // Inicialización diferida por primer clic
       if (audioCtx && audioCtx.state === 'suspended') {
         audioCtx.resume();
       }
@@ -2298,12 +2441,15 @@
       }
     }
 
-    // ECG drawing & spectrum bars
+    // =========================================================
+    // DIBUJO REACTIVO DE BIOMETRÍA Y ESPECTRO DE BARRAS
+    // =========================================================
     const ecgCanvas = document.getElementById('ecg-canvas');
     const ecgCtx = ecgCanvas.getContext('2d');
     let ecgWidth = ecgCanvas.width = ecgCanvas.offsetWidth;
     let ecgHeight = ecgCanvas.height = ecgCanvas.offsetHeight;
     
+    // Inyección de barras para el contenedor del espectro
     const spectrumContainer = document.getElementById('spectrum-container');
     const numBars = 16;
     for(let i=0; i < numBars; i++) {
@@ -2321,11 +2467,15 @@
     function renderDynamicBiometrics() {
       requestAnimationFrame(renderDynamicBiometrics);
       
+      // Limpiar lienzo con efecto desvanecimiento para arrastre de línea
       ecgCtx.fillStyle = 'rgba(6, 5, 12, 0.2)';
       ecgCtx.fillRect(0, 0, ecgWidth, ecgHeight);
 
+      // Comprobar estado de reproducción
       if (isAudioEngineInitialized && !bgAudio.paused) {
         analyser.getByteFrequencyData(audioDataArray);
+        
+        // FREQUENCY CAPPING: Recorte a los primeros 2/3 del array útil (hasta ~8kHz - 10kHz)
         const cappedLength = Math.floor(audioDataArray.length * (2 / 3));
         
         let sum = 0;
@@ -2334,9 +2484,11 @@
         }
         let avg = cappedLength > 0 ? sum / cappedLength : 0;
         
+        // CONTROL DE TECHO DE SEGURIDAD: Math.min empala el tope máximo seguro de amplificación a 2.0
         targetAmpFactor = Math.min(2.0, 1.0 + (avg * 0.015));
         
-        let step = Math.floor(cappedLength / numBars);
+        // Dibuja el espectro proyectando únicamente los primeros 2/3 del rango
+        let step = Math.floor(cappedLength / numBars) || 1;
         for(let i = 0; i < spectrumBars.length; i++) {
           let binIndex = Math.min(i * step, cappedLength - 1);
           let val = audioDataArray[binIndex] || 0;
@@ -2344,20 +2496,23 @@
           spectrumBars[i].style.height = height + '%';
         }
       } else {
-        targetAmpFactor = 1.0;
+        targetAmpFactor = 1.0; // Estado plano cuando pausa
         for(let i = 0; i < spectrumBars.length; i++) {
           spectrumBars[i].style.height = '15%';
         }
       }
 
+      // Transición suave entre estado alterado y base
       audioAmpFactor += (targetAmpFactor - audioAmpFactor) * 0.1;
 
       ecgCtx.beginPath();
       ecgCtx.strokeStyle = 'rgba(255, 42, 117, 0.8)';
       ecgCtx.lineWidth = 1.5;
 
+      // Incremento matemático inmutable como requisito base
       ecgStep += 2.5;
 
+      // REDUCCIÓN DE AMPLITUD BASE: Fijada quirúrgicamente a 12px en estado estático/reposo
       const baseAmplitude = 12;
       const centerY = ecgHeight / 2;
 
@@ -2372,7 +2527,9 @@
       ecgCtx.stroke();
     }
 
-    // UI helpers
+    // =========================================================
+    // EVENT LISTENERS E INICIALIZACIÓN DE COMPONENTES
+    // =========================================================
     window.attachSpotlightListeners = function() {
       const cards = document.querySelectorAll('.archive-card, .voice-module, .radar-module, .ecg-sync-container, .thermal-card, .matrix-cell');
       cards.forEach(card => {
@@ -2403,7 +2560,7 @@
       });
     };
 
-    let themeState = 0;
+    let themeState = 0; // 0: Normal (Rosa Eléctrico), 1: Chroma Pastel, 2: RGB Mode
     window.toggleTheme = function() {
       const body = document.body;
       const themeBtn = document.getElementById('theme-btn');
@@ -2421,6 +2578,7 @@
       }
     };
 
+    // Contador del HUD
     function initHudTimer() {
       const timerElem = document.getElementById('hud-timer');
       if (!timerElem) return;
@@ -2438,6 +2596,7 @@
       setInterval(updateTimer, 60000);
     }
 
+    // Fondo Canvas Partículas Espaciales
     function initSpaceCanvas() {
       const canvas = document.getElementById('space-canvas');
       if (!canvas) return;
@@ -2483,9 +2642,9 @@
       animateParticles();
     }
 
-    // Inicialización global al cargar DOM
-    document.addEventListener('DOMContentLoaded', () => {
-      loadLogsFromStorage();
+    // Inicialización global al cargar DOM (usamos async para await loadLogsFromStorage)
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadLogsFromStorage();
       window.updateYearFilters();
       renderLogs('ALL');
       startMatrixTransmission();
@@ -2499,120 +2658,6 @@
       bgAudio.addEventListener('ended', () => {
         window.nextSlot();
       });
-    });
-  </script>
-
-  <!-- ========================= -->
-  <!-- Firebase modular SDK -->
-  <!-- ========================= -->
-  <script type="module">
-    // Import modular SDK from CDN
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
-    import { getFirestore, collection, doc, onSnapshot, setDoc, serverTimestamp, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
-
-    // Tu configuración (la que pegaste)
-    const firebaseConfig = {
-      apiKey: "AIzaSyBx1j_UlQ4dTcVhH1qFIwRq0A6Ynxl97w0",
-      authDomain: "amorcito1209-cf81c.firebaseapp.com",
-      projectId: "amorcito1209-cf81c",
-      storageBucket: "amorcito1209-cf81c.firebasestorage.app",
-      messagingSenderId: "46648518991",
-      appId: "1:46648518991:web:f19e7734f7c2a240df7d3a",
-      measurementId: "G-3WYLC6V9RW"
-    };
-
-    // Inicializar Firebase
-    const app = initializeApp(firebaseConfig);
-    try {
-      getAnalytics(app);
-    } catch (e) {
-      // analytics solo si está disponible (no crítico)
-      console.log("Analytics no inicializado:", e);
-    }
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
-    // Estado global accesible desde scripts no-modulares
-    window.firebaseReady = false;
-    window.firebaseDB = db;
-
-    // Función para suscribirse a la colección 'logs' en tiempo real
-    let unsubscribe = null;
-    function subscribeLogsRealtime() {
-      if (unsubscribe) unsubscribe();
-
-      // Orden no estricto; Firestore no requiere ordering, usamos orderBy updatedAt si existe
-      const q = query(collection(db, 'logs'));
-      unsubscribe = onSnapshot(q, snapshot => {
-        const remote = [];
-        snapshot.forEach(docSnap => {
-          const data = docSnap.data();
-          // Use doc id if item doesn't include id
-          const item = { ...(data || {}), id: data && data.id ? data.id : docSnap.id };
-          remote.push(item);
-        });
-        // Guardar remote como fuente de verdad local
-        window.logsData = remote;
-        // Mantener caché local
-        localStorage.setItem('cyber_romance_logs', JSON.stringify(remote));
-        // Actualizar UI
-        try {
-          window.updateYearFilters();
-          window.renderLogs(window.activeYearFilter || 'ALL');
-          console.log("Firestore: logs sincronizados (snapshot).");
-        } catch (e) {
-          console.error("Error al actualizar UI tras snapshot:", e);
-        }
-      }, err => {
-        console.error("Error snapshot logs:", err);
-      });
-    }
-
-    // Subir/actualizar un log en Firestore usando log.id como doc id
-    window.pushLogToFirestore = async function(log) {
-      if (!log || !log.id) return;
-      try {
-        const docRef = doc(db, 'logs', log.id);
-        const payload = { ...log, updatedAt: serverTimestamp() };
-        await setDoc(docRef, payload, { merge: true });
-        console.log("Firestore: log guardado", log.id);
-      } catch (e) {
-        console.error("Error subiendo log a Firestore:", e);
-      }
-    };
-
-    // Opcional: eliminar log remoto
-    window.deleteLogFromFirestore = async function(logId) {
-      if (!logId) return;
-      try {
-        await deleteDoc(doc(db, 'logs', logId));
-        console.log("Firestore: log eliminado", logId);
-      } catch (e) {
-        console.error("Error eliminando log en Firestore:", e);
-      }
-    };
-
-    // Sign in anonymously and subscribe
-    signInAnonymously(auth)
-      .then(() => {
-        console.log("Firebase Auth: signed in anonymously");
-        window.firebaseReady = true;
-        subscribeLogsRealtime();
-      })
-      .catch(err => {
-        console.error("Firebase Auth error (anonymous):", err);
-      });
-
-    // También reaccionamos al estado de auth por si quieres mostrar UI distinta
-    onAuthStateChanged(auth, user => {
-      if (user) {
-        // user.uid disponible
-        console.log("Auth state changed: signed in", user.uid);
-      } else {
-        console.log("Auth state changed: signed out");
-      }
     });
   </script>
 </body>
