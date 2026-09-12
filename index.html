@@ -1,0 +1,2619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Anniversary Archive // Cyber-Romance Hub</title>
+  
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,600;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+  <style>
+    /* --- (mantuve tu CSS exactamente como estaba) --- */
+    :root {
+      --bg-dark: #06050c;
+      --panel-glass: rgba(18, 14, 32, 0.65);
+      --panel-border: rgba(255, 42, 117, 0.25);
+      --panel-border-hover: rgba(255, 42, 117, 0.7);
+      
+      --neon-pink: #ff2a75;
+      --cyber-violet: #a855f7;
+      --soft-rose: #f7cad0;
+      --text-main: #f0edf6;
+      --text-muted: #8c85ad;
+      
+      --glow-accent: 0 0 10px rgba(255, 42, 117, 0.4), 0 0 40px rgba(255, 42, 117, 0.1);
+      --chroma-speed: 5s;
+      --transmission-speed: 18000ms;
+      --mouse-x: 50%;
+      --mouse-y: 50%;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      border-radius: 0 !important;
+    }
+
+    @property --pastel-hue {
+      syntax: '<angle>';
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    body.theme-pastel {
+      --pastel-hue: 0deg;
+      --neon-pink: hsl(calc(340deg + var(--pastel-hue)), 75%, 82%);
+      --cyber-violet: hsl(calc(265deg + var(--pastel-hue)), 80%, 85%);
+      --soft-rose: hsl(calc(160deg + var(--pastel-hue)), 45%, 80%);
+      --text-main: #f8f7ff;
+      --text-muted: hsl(calc(185deg + var(--pastel-hue)), 75%, 82%);
+      --panel-border: hsla(calc(265deg + var(--pastel-hue)), 80%, 85%, 0.35);
+      --panel-border-hover: hsla(calc(340deg + var(--pastel-hue)), 75%, 82%, 0.8);
+      --glow-accent: 0 0 12px hsla(calc(265deg + var(--pastel-hue)), 80%, 85%, 0.35), 0 0 40px hsla(calc(340deg + var(--pastel-hue)), 75%, 82%, 0.15);
+      animation: pastel-chroma-sweep 25s linear infinite;
+    }
+
+    @keyframes pastel-chroma-sweep {
+      0% { --pastel-hue: 0deg; }
+      100% { --pastel-hue: 360deg; }
+    }
+
+    body.theme-rgb {
+      --neon-pink: #ff0000;
+      --cyber-violet: #00ff00;
+      --soft-rose: #0000ff;
+      --panel-border: rgba(255, 0, 0, 0.5);
+      --panel-border-hover: rgba(0, 255, 0, 0.85);
+      --glow-accent: 0 0 15px rgba(255, 0, 0, 0.6), 0 0 45px rgba(0, 0, 255, 0.4);
+      animation: rgb-gaming-sweep 3s linear infinite;
+    }
+
+    @keyframes rgb-gaming-sweep {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      transition: background-color 0.5s ease;
+    }
+
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 3px
+      );
+      opacity: 0.6;
+    }
+
+    #space-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .app-container {
+      max-width: 1150px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .hud-corners {
+      position: relative;
+    }
+    .hud-corner-t-left,
+    .hud-corner-t-right,
+    .hud-corner-b-left,
+    .hud-corner-b-right {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: rgba(247, 202, 208, 0.25);
+      border-style: solid;
+      pointer-events: none;
+      transition: border-color 0.3s ease, opacity 0.3s ease;
+      z-index: 3;
+    }
+
+    .hud-corner-t-left { top: 6px; left: 6px; border-width: 1.5px 0 0 1.5px; }
+    .hud-corner-t-right { top: 6px; right: 6px; border-width: 1.5px 1.5px 0 0; }
+    .hud-corner-b-left { bottom: 6px; left: 6px; border-width: 0 0 1.5px 1.5px; }
+    .hud-corner-b-right { bottom: 6px; right: 6px; border-width: 0 1.5px 1.5px 0; }
+
+    .hud-corners:hover .hud-corner-t-left,
+    .hud-corners:hover .hud-corner-t-right,
+    .hud-corners:hover .hud-corner-b-left,
+    .hud-corners:hover .hud-corner-b-right {
+      border-color: var(--neon-pink);
+    }
+
+    .archive-card,
+    .voice-module,
+    .radar-module,
+    .ecg-sync-container,
+    .thermal-card,
+    .matrix-cell {
+      position: relative !important;
+      overflow: hidden !important;
+    }
+
+    .archive-card::before,
+    .voice-module::before,
+    .radar-module::before,
+    .ecg-sync-container::before,
+    .thermal-card::before,
+    .matrix-cell::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        380px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        color-mix(in srgb, var(--neon-pink) 15%, transparent),
+        transparent 70%
+      );
+      opacity: 0;
+      pointer-events: none !important;
+      z-index: 2;
+      transition: opacity 0.3s ease;
+    }
+
+    .archive-card:hover::before,
+    .voice-module:hover::before,
+    .radar-module:hover::before,
+    .ecg-sync-container:hover::before,
+    .thermal-card:hover::before,
+    .matrix-cell:hover::before {
+      opacity: 1;
+    }
+
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(18, 14, 32, 0.75) 100%);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      box-shadow: var(--glow-accent);
+    }
+
+    .telemetry-group {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .telemetry-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--neon-pink);
+      box-shadow: 0 0 10px var(--neon-pink);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 15px var(--neon-pink); }
+      100% { transform: scale(0.9); opacity: 0.6; }
+    }
+
+    .telemetry-val {
+      color: var(--text-main);
+      font-weight: bold;
+    }
+
+    .theme-toggle-btn, .year-btn, .pin-btn, .voice-play-btn, .ext-link-btn {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pulse-wave {
+      position: absolute;
+      background: rgba(255, 42, 117, 0.5);
+      border-radius: 50% !important;
+      transform: scale(0);
+      animation: pulseWaveAnim 0.6s linear;
+      pointer-events: none;
+    }
+
+    @keyframes pulseWaveAnim {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    .theme-toggle-btn {
+      background: rgba(255, 42, 117, 0.15);
+      border: 1px solid var(--panel-border-hover);
+      color: var(--text-main);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      padding: 6px 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 1px;
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--neon-pink);
+      color: #000;
+      box-shadow: 0 0 15px var(--neon-pink);
+    }
+
+    .hero-section {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-tag {
+      color: var(--soft-rose);
+      font-size: 0.85rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      display: block;
+      font-family: 'Share Tech Mono', monospace;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4.2rem);
+      font-weight: 600;
+      background: linear-gradient(135deg, #ffffff 30%, var(--soft-rose) 70%, var(--neon-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+    }
+
+    .hero-subtitle {
+      color: var(--text-muted);
+      font-weight: 300;
+      max-width: 600px;
+      margin: 0 auto;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+
+    .year-filter-wrapper {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 0%, rgba(18, 14, 32, 0.6) 100%);
+      border: 1px solid var(--panel-border);
+      backdrop-filter: blur(12px);
+      padding: 0.8rem 1.2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .year-filter-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--soft-rose);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .year-nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .year-btn {
+      background: var(--panel-glass);
+      border: 1px solid var(--panel-border);
+      color: var(--text-muted);
+      font-family: 'Share Tech Mono', monospace;
+      padding: 6px 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .year-btn:hover, .year-btn.active {
+      color: #fff;
+      border-color: var(--neon-pink);
+      background: rgba(255, 42, 117, 0.2);
+      box-shadow: 0 0 15px rgba(255, 42, 117, 0.3);
+    }
+
+    .ecg-sync-container {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(18, 14, 32, 0.75) 100%);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      padding: 1.2rem 1.8rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--glow-accent);
+    }
+
+    .ecg-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 0.8rem;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .ecg-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ecg-badge {
+      color: var(--neon-pink);
+      font-weight: bold;
+      letter-spacing: 1.5px;
+    }
+
+    .ecg-sync-rate {
+      background: rgba(255, 42, 117, 0.15);
+      border: 1px solid var(--panel-border-hover);
+      color: var(--soft-rose);
+      padding: 4px 10px;
+      font-weight: bold;
+    }
+
+    .ecg-canvas-wrapper {
+      position: relative;
+      width: 100%;
+      height: 75px;
+      background: rgba(6, 5, 12, 0.6);
+      border: 1px dashed rgba(255, 42, 117, 0.2);
+      overflow: hidden;
+      z-index: 3;
+    }
+
+    #ecg-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .ecg-legend {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1.5rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      margin-top: 0.6rem;
+      z-index: 3;
+      position: relative;
+    }
+
+    .legend-node {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .node-color-aru { width: 10px; height: 3px; background: var(--neon-pink); box-shadow: 0 0 6px var(--neon-pink); }
+    .node-color-mty { width: 10px; height: 3px; background: var(--soft-rose); box-shadow: 0 0 6px var(--soft-rose); }
+
+    .tech-modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .voice-module {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(18, 14, 32, 0.8) 100%);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      box-shadow: var(--glow-accent);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .voice-header {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--cyber-violet);
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 3;
+      position: relative;
+    }
+
+    .voice-header-clickable {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.2s ease;
+    }
+
+    .voice-header-clickable:hover {
+      color: var(--neon-pink);
+    }
+
+    .voice-body {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      margin-bottom: 1rem;
+      z-index: 3;
+      position: relative;
+    }
+
+    .voice-play-btn {
+      width: 52px;
+      height: 52px;
+      background: rgba(255, 42, 117, 0.2);
+      border: 2px solid var(--neon-pink);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 0 12px rgba(255, 42, 117, 0.4);
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+    }
+
+    .voice-play-btn.playing {
+      animation: pulseGlow 1.2s infinite alternate;
+      background: var(--neon-pink);
+      color: #000;
+    }
+
+    @keyframes pulseGlow {
+      from { box-shadow: 0 0 8px var(--neon-pink); }
+      to { box-shadow: 0 0 22px var(--neon-pink), 0 0 35px var(--neon-pink); }
+    }
+
+    .spectrum-container {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 3px;
+      height: 104px;
+      min-height: 104px;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 8px 10px;
+      border: 1px solid rgba(255, 42, 117, 0.25);
+    }
+
+    .spectrum-bar {
+      flex: 1;
+      background: linear-gradient(0deg, var(--cyber-violet), var(--neon-pink));
+      height: 6%;
+      transition: height 0.05s ease-out;
+    }
+
+    .voice-footer {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      z-index: 3;
+      position: relative;
+    }
+
+    .radar-module {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(18, 14, 32, 0.8) 100%);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      padding: 1.5rem;
+      box-shadow: var(--glow-accent);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .radar-title {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--soft-rose);
+      margin-bottom: 0.8rem;
+      width: 100%;
+      text-align: left;
+      z-index: 3;
+      position: relative;
+    }
+
+    .radar-display {
+      width: 160px;
+      height: 160px;
+      border: 1px solid rgba(247, 202, 208, 0.25);
+      position: relative;
+      background: radial-gradient(circle, rgba(255, 42, 117, 0.05) 0%, transparent 70%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0.5rem 0;
+      z-index: 3;
+    }
+
+    .radar-grid-ring {
+      position: absolute;
+      border: 1px dashed rgba(247, 202, 208, 0.15);
+    }
+
+    .ring-1 { width: 40%; height: 40%; }
+    .ring-2 { width: 70%; height: 70%; }
+    .ring-3 { width: 95%; height: 95%; }
+
+    .radar-cross-x {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: rgba(247, 202, 208, 0.12);
+    }
+    .radar-cross-y {
+      position: absolute;
+      height: 100%;
+      width: 1px;
+      background: rgba(247, 202, 208, 0.12);
+    }
+
+    .radar-sweep {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 0;
+      right: 0;
+      background: conic-gradient(from 0deg at 0% 100%, rgba(255, 42, 117, 0.3) 0deg, transparent 60deg);
+      transform-origin: 0% 100%;
+      animation: sweepAnim 4s linear infinite;
+    }
+
+    @keyframes sweepAnim {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .radar-svg-overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .radar-node-label {
+      position: absolute;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--neon-pink);
+      background: rgba(6, 5, 12, 0.8);
+      padding: 1px 4px;
+      border: 1px solid rgba(255, 42, 117, 0.3);
+    }
+
+    .node-aru { bottom: 20%; left: 12%; }
+    .node-mty { top: 20%; right: 12%; color: var(--soft-rose); border-color: rgba(247, 202, 208, 0.3); }
+
+    .matrix-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+
+    @media (min-width: 900px) {
+      .matrix-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .matrix-cell {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(18, 14, 32, 0.8) 100%);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      padding: 1rem;
+      height: 115px;
+      min-height: 115px;
+      max-height: 115px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+      cursor: default;
+      overflow: hidden !important;
+    }
+
+    .matrix-cell > * {
+      position: relative;
+      z-index: 3;
+    }
+
+    .matrix-cell:hover {
+      border-color: var(--panel-border-hover);
+      box-shadow: var(--glow-accent);
+    }
+
+    .matrix-text {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(0.85rem, 1.1vw, 1.15rem);
+      font-weight: bold;
+      color: var(--text-main);
+      text-shadow: 0 0 8px var(--neon-pink);
+      margin-bottom: 0.35rem;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      word-break: break-word;
+      width: 100%;
+      max-height: 2.8em;
+      line-height: 1.2;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .matrix-lang {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--cyber-violet);
+      letter-spacing: 1px;
+      transition: opacity 0.25s ease;
+      text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .matrix-cell.updating .matrix-text {
+      opacity: 0.15;
+      transform: scale(0.92);
+    }
+
+    .matrix-cell.updating .matrix-lang {
+      opacity: 0.15;
+    }
+
+    .archive-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .archive-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(18, 14, 32, 0.8) 100%);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--panel-border);
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .archive-card > * {
+      position: relative;
+      z-index: 3;
+    }
+
+    .archive-card.hidden {
+      display: none;
+    }
+
+    .archive-card-border-glow {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--neon-pink), transparent);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 3;
+    }
+
+    .archive-card:hover {
+      transform: translateY(-7px);
+      border-color: var(--panel-border-hover);
+      box-shadow: var(--glow-accent);
+    }
+
+    .archive-card:hover .archive-card-border-glow {
+      opacity: 1;
+    }
+
+    .archive-card.anniversary-card {
+      border: 2px solid var(--neon-pink) !important;
+      box-shadow: 0 0 25px var(--neon-pink), inset 0 0 15px rgba(255, 42, 117, 0.25) !important;
+      position: relative;
+      background: linear-gradient(180deg, rgba(255, 42, 117, 0.12) 0%, rgba(18, 14, 32, 0.92) 100%) !important;
+    }
+
+    .archive-card.anniversary-card::after {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border: 1px solid var(--neon-pink);
+      pointer-events: none;
+      animation: annivPulse 2.5s infinite alternate;
+      z-index: 2;
+    }
+
+    @keyframes annivPulse {
+      0% { opacity: 0.3; box-shadow: 0 0 8px var(--neon-pink); }
+      100% { opacity: 1; box-shadow: 0 0 28px var(--neon-pink), 0 0 48px var(--neon-pink); }
+    }
+
+    .anniversary-indicator {
+      display: inline-block;
+      background: var(--neon-pink);
+      color: #000;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.72rem;
+      font-weight: bold;
+      padding: 4px 10px;
+      letter-spacing: 1.5px;
+      margin-bottom: 0.8rem;
+      box-shadow: 0 0 12px var(--neon-pink);
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--cyber-violet);
+      margin-bottom: 1.2rem;
+    }
+
+    .card-date {
+      color: var(--text-muted);
+    }
+
+    .card-badge {
+      background: rgba(168, 85, 247, 0.15);
+      padding: 4px 10px;
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      color: var(--soft-rose);
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: #fff;
+      margin-bottom: 0.8rem;
+      transition: color 0.3s ease;
+    }
+
+    .card-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 2rem;
+      font-weight: 300;
+    }
+
+    .card-action {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--soft-rose);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-family: 'Share Tech Mono', monospace;
+      transition: gap 0.3s ease;
+    }
+
+    .archive-card:hover .card-action {
+      gap: 16px;
+      color: var(--neon-pink);
+    }
+
+    .archive-card.locked {
+      border-style: dashed;
+      opacity: 0.85;
+    }
+    .archive-card.locked .card-title {
+      color: var(--text-muted);
+    }
+
+    .thermal-gallery-section {
+      margin-bottom: 4rem;
+    }
+
+    .section-title-group {
+      text-align: left;
+      margin-bottom: 1.5rem;
+    }
+
+    .thermal-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .thermal-card {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(18, 14, 32, 0.85) 100%);
+      border: 1px solid var(--panel-border);
+      padding: 0.8rem;
+      cursor: pointer;
+      transition: all 0.4s ease;
+    }
+
+    .thermal-card > * {
+      position: relative;
+      z-index: 3;
+    }
+
+    .thermal-img-wrapper {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      background: #000;
+      margin-bottom: 0.8rem;
+    }
+
+    .thermal-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(140%) brightness(65%) hue-rotate(190deg) sepia(40%);
+      transition: filter 0.5s ease, transform 0.5s ease;
+    }
+
+    .thermal-card:hover .thermal-img {
+      filter: contrast(100%) brightness(100%) hue-rotate(0deg) sepia(0%);
+      transform: scale(1.05);
+    }
+
+    .thermal-card:hover {
+      border-color: var(--neon-pink);
+      box-shadow: var(--glow-accent);
+      transform: translateY(-4px);
+    }
+
+    .thermal-overlay-code {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: #00f0ff;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 2px 6px;
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      pointer-events: none;
+    }
+
+    .thermal-caption {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(4, 3, 10, 0.85);
+      backdrop-filter: blur(15px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 1.5rem;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-window {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(18, 14, 32, 0.9) 100%);
+      border: 1px solid var(--panel-border-hover);
+      box-shadow: var(--glow-accent);
+      width: 100%;
+      max-width: 680px;
+      padding: 2.5rem;
+      position: relative;
+      transform: scale(0.92);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-backdrop.active .modal-window {
+      animation: holoUnfold 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes holoUnfold {
+      0% {
+        transform: scaleX(0.01) scaleY(0.005);
+        opacity: 0.1;
+        box-shadow: 0 0 50px var(--neon-pink);
+      }
+      35% {
+        transform: scaleX(1) scaleY(0.008);
+        opacity: 0.8;
+        box-shadow: 0 0 30px var(--neon-pink);
+      }
+      100% {
+        transform: scaleX(1) scaleY(1);
+        opacity: 1;
+        box-shadow: var(--glow-accent);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.3s ease;
+      z-index: 5;
+    }
+
+    .modal-close:hover {
+      color: var(--neon-pink);
+    }
+
+    .modal-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--cyber-violet);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #fff;
+      margin-top: 5px;
+    }
+
+    .modal-body {
+      color: var(--text-main);
+      font-size: 1rem;
+      line-height: 1.8;
+      font-weight: 300;
+      max-height: 50vh;
+      overflow-y: auto;
+      padding-right: 10px;
+    }
+
+    .modal-footer-action {
+      margin-top: 1.8rem;
+      padding-top: 1.2rem;
+      border-top: 1px dashed rgba(255, 42, 117, 0.25);
+      display: flex;
+      justify-content: flex-start;
+    }
+
+    .ext-link-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 42, 117, 0.15);
+      border: 1px solid var(--panel-border-hover);
+      color: var(--text-main);
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      padding: 10px 20px;
+      cursor: pointer;
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .ext-link-btn:hover {
+      background: var(--neon-pink);
+      color: #000;
+      box-shadow: 0 0 20px var(--neon-pink);
+      font-weight: bold;
+    }
+
+    .pin-input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-top: 1.5rem;
+    }
+
+    .pin-input {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--panel-border);
+      padding: 12px 18px;
+      color: #fff;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 1rem;
+      outline: none;
+      letter-spacing: 1px;
+      transition: border-color 0.3s ease;
+    }
+
+    .pin-input:focus {
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 10px rgba(255, 42, 117, 0.3);
+    }
+
+    .pin-btn {
+      background: var(--neon-pink);
+      color: #000;
+      border: none;
+      padding: 12px;
+      font-family: 'Share Tech Mono', monospace;
+      font-weight: bold;
+      cursor: pointer;
+      transition: opacity 0.3s ease;
+    }
+
+    .pin-btn:hover {
+      opacity: 0.9;
+    }
+
+    @media (max-width: 768px) {
+      .app-container { padding: 1.5rem 1rem; }
+      .status-bar { flex-direction: column; align-items: flex-start; }
+      .hero-title { font-size: 2.2rem; }
+      .modal-window { padding: 1.8rem; }
+      .tech-modules-grid { grid-template-columns: 1fr; }
+      .year-filter-wrapper { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TEXTURA SUTIL CRT DE SCANLINES -->
+  <div class="scanlines"></div>
+
+  <!-- FONDO ANIMADO DE PARTÍCULAS ESPACIALES -->
+  <canvas id="space-canvas"></canvas>
+
+  <!-- REPRODUCTOR DE AUDIO -->
+  <audio id="bg-audio" crossorigin="anonymous" preload="auto"></audio>
+
+  <div class="app-container">
+    
+    <!-- BARRA SUPERIOR -->
+    <header class="status-bar hud-corners">
+      <span class="hud-corner-t-left"></span>
+      <span class="hud-corner-t-right"></span>
+      <span class="hud-corner-b-left"></span>
+      <span class="hud-corner-b-right"></span>
+      <div class="telemetry-group">
+        <div class="telemetry-item">
+          <div class="pulse-dot"></div>
+          <span>LINK: <span class="telemetry-val">ARAURE ↔ MONTERREY</span></span>
+        </div>
+        <div class="telemetry-item">
+          <span>DIST: <span class="telemetry-val">3,740 KM</span></span>
+        </div>
+        <div class="telemetry-item">
+          <span>TIEMPO: <span class="telemetry-val" id="hud-timer">00d 00h 00m</span></span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="theme-toggle-btn" onclick="openCmsAuthModal()" id="cms-btn">⚙ CMS ADMIN</button>
+        <button class="theme-toggle-btn" onclick="openCmsForNew()" id="new-event-btn">➕ NUEVO EVENTO</button>
+        <button class="theme-toggle-btn" onclick="toggleTheme()" id="theme-btn">MODE: ROSA ELÉCTRICO</button>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero-section">
+      <span class="hero-tag">GALERIA DIGITAL DE MI AMORCITO Y YO</span>
+      <h1 class="hero-title">Nuestro Mundo</h1>
+      <p class="hero-subtitle">
+        Bitácora interactiva de momentos, registros y archivos de amor preservados a través del espacio y el tiempo.
+      </p>
+    </section>
+
+    <!-- ECG -->
+    <div class="ecg-sync-container hud-corners">
+      <span class="hud-corner-t-left"></span>
+      <span class="hud-corner-t-right"></span>
+      <span class="hud-corner-b-left"></span>
+      <span class="hud-corner-b-right"></span>
+      <div class="ecg-header">
+        <div class="ecg-title-group">
+          <div class="pulse-dot"></div>
+          <span class="ecg-badge">FLUJO DEL AMOR COMO EL AGUA</span>
+        </div>
+        <div class="ecg-sync-rate">SINCRONIA: 99.8%</div>
+      </div>
+      <div class="ecg-canvas-wrapper">
+        <canvas id="ecg-canvas"></canvas>
+      </div>
+      <div class="ecg-legend">
+        <div class="legend-node">
+          <div class="node-color-aru"></div>
+          <span>NODE_A: ARAURE [72 BPM]</span>
+        </div>
+        <div class="legend-node">
+          <div class="node-color-mty"></div>
+          <span>NODE_B: MONTERREY [75 BPM]</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RADAR + VOICE -->
+    <div class="tech-modules-grid">
+      <div class="radar-module hud-corners">
+        <span class="hud-corner-t-left"></span>
+        <span class="hud-corner-t-right"></span>
+        <span class="hud-corner-b-left"></span>
+        <span class="hud-corner-b-right"></span>
+        <div class="radar-title">LINK VECTOR RADAR // 3,740 KM</div>
+        <div class="radar-display">
+          <div class="radar-grid-ring ring-1"></div>
+          <div class="radar-grid-ring ring-2"></div>
+          <div class="radar-grid-ring ring-3"></div>
+          <div class="radar-cross-x"></div>
+          <div class="radar-cross-y"></div>
+          <div class="radar-sweep"></div>
+          <svg class="radar-svg-overlay" viewBox="0 0 160 160">
+            <path d="M 30,125 Q 80,30 130,35" fill="none" stroke="var(--neon-pink)" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.8"/>
+            <circle r="3" fill="#00f0ff">
+              <animateMotion path="M 30,125 Q 80,30 130,35" dur="3s" repeatCount="indefinite" />
+            </circle>
+          </svg>
+          <span class="radar-node-label node-aru">[ARU-VEN]</span>
+          <span class="radar-node-label node-mty">[MTY-MEX]</span>
+        </div>
+      </div>
+
+      <div class="voice-module hud-corners">
+        <span class="hud-corner-t-left"></span>
+        <span class="hud-corner-t-right"></span>
+        <span class="hud-corner-b-left"></span>
+        <span class="hud-corner-b-right"></span>
+        <div class="voice-header voice-header-clickable" onclick="window.nextSlot()" title="Clic para cambiar de audio">
+          <span id="voice-freq-display">FREQ: 108.4 MHz ⇆</span>
+          <span style="color: var(--soft-rose);">// ENCRYPTED_VOICE_NOTE</span>
+        </div>
+        <div class="voice-body">
+          <button class="voice-play-btn" id="voice-btn" onclick="window.toggleVoicePlayback()">▶</button>
+          <div class="spectrum-container" id="spectrum-container"></div>
+        </div>
+        <div class="voice-footer">
+          <span id="voice-status-display">STATUS: SIGNAL_LOCKED</span>
+          <span id="voice-duration-display">DURATION: 00:48</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MATRIX -->
+    <section class="matrix-section">
+      <div class="section-title-group" style="margin-bottom: 1.2rem;">
+        <span class="hero-tag">MULTILINGUAL LOVE</span>
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff;">Te Amo en todas las lenguas</h2>
+      </div>
+      <div class="matrix-grid">
+        <div class="matrix-cell hud-corners" id="matrix-cell-0">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="matrix-text">Te amo / Te quiero</div>
+          <div class="matrix-lang">[ESPAÑOL - REGIÓN: ROMANCE]</div>
+        </div>
+        <div class="matrix-cell hud-corners" id="matrix-cell-1">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="matrix-text">I love you</div>
+          <div class="matrix-lang">[INGLÉS - REGIÓN: GERMÁNICO]</div>
+        </div>
+        <div class="matrix-cell hud-corners" id="matrix-cell-2">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="matrix-text">愛してる / 好きです</div>
+          <div class="matrix-lang">[JAPONÉS - REGIÓN: ASIA ORIENTAL]</div>
+        </div>
+        <div class="matrix-cell hud-corners" id="matrix-cell-3">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="matrix-text">Je t'aime</div>
+          <div class="matrix-lang">[FRANCÉS - REGIÓN: ROMANCE]</div>
+        </div>
+        <div class="matrix-cell hud-corners" id="matrix-cell-4">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="matrix-text">Ich liebe dich</div>
+          <div class="matrix-lang">[ALEMÁN - REGIÓN: GERMÁNICO]</div>
+        </div>
+        <div class="matrix-cell hud-corners" id="matrix-cell-5">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="matrix-text">Я тебя люблю</div>
+          <div class="matrix-lang">[RUSO - REGIÓN: ESLAVO]</div>
+        </div>
+        <div class="matrix-cell hud-corners" id="matrix-cell-6">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="matrix-text">我爱你</div>
+          <div class="matrix-lang">[CHINO MANDARÍN - REGIÓN: ASIA ORIENTAL]</div>
+        </div>
+        <div class="matrix-cell hud-corners" id="matrix-cell-7">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="matrix-text">사랑해</div>
+          <div class="matrix-lang">[COREANO - REGIÓN: ASIA ORIENTAL]</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- YEAR FILTER -->
+    <div class="year-filter-wrapper hud-corners">
+      <span class="hud-corner-t-left"></span>
+      <span class="hud-corner-t-right"></span>
+      <span class="hud-corner-b-left"></span>
+      <span class="hud-corner-b-right"></span>
+      <div class="year-filter-title">
+        <span style="color: var(--neon-pink);">●</span>
+        <span>BITÁCORA DE REGISTROS // FILTRO TEMPORAL</span>
+      </div>
+      <nav class="year-nav" id="year-nav-container"></nav>
+    </div>
+
+    <!-- ARCHIVE GRID -->
+    <main class="archive-grid" id="archive-grid-container"></main>
+
+    <!-- THERMAL GALLERY -->
+    <section class="thermal-gallery-section">
+      <div class="section-title-group">
+        <span class="hero-tag">GALERÍA VISUAL // SENSOR STREAM</span>
+        <h2 style="font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff;">Bóveda de Fotogramas Térmicos</h2>
+      </div>
+      <div class="thermal-grid" id="thermal-grid-container">
+        <div class="thermal-card hud-corners">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="thermal-img-wrapper">
+            <span class="thermal-overlay-code">CAM_LOG // 2025.02.14 // SENSOR_OK</span>
+            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=600&auto=format&fit=crop" alt="Fotograma 1" class="thermal-img">
+          </div>
+          <div class="thermal-caption">
+            <span>CAPTURE_01.RAW</span>
+            <span>ARAURE_STATION</span>
+          </div>
+        </div>
+
+        <div class="thermal-card hud-corners">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="thermal-img-wrapper">
+            <span class="thermal-overlay-code">CAM_LOG // 2025.09.12 // SIGNAL_STABLE</span>
+            <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop" alt="Fotograma 2" class="thermal-img">
+          </div>
+          <div class="thermal-caption">
+            <span>CAPTURE_02.RAW</span>
+            <span>VECTOR_HORIZON</span>
+          </div>
+        </div>
+
+        <div class="thermal-card hud-corners">
+          <span class="hud-corner-t-left"></span>
+          <span class="hud-corner-t-right"></span>
+          <span class="hud-corner-b-left"></span>
+          <span class="hud-corner-b-right"></span>
+          <div class="thermal-img-wrapper">
+            <span class="thermal-overlay-code">CAM_LOG // 2026.02.14 // THERMAL_LOCK</span>
+            <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600&auto=format&fit=crop" alt="Fotograma 3" class="thermal-img">
+          </div>
+          <div class="thermal-caption">
+            <span>CAPTURE_03.RAW</span>
+            <span>MONTERREY_NODE</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal-window hud-corners">
+      <span class="hud-corner-t-left"></span>
+      <span class="hud-corner-t-right"></span>
+      <span class="hud-corner-b-left"></span>
+      <span class="hud-corner-b-right"></span>
+      <button class="modal-close" onclick="closeModal('modal')">✕</button>
+      <div class="modal-header">
+        <span class="modal-tag" id="modal-tag">LOG // 000</span>
+        <h2 class="modal-title" id="modal-title">Título</h2>
+      </div>
+      <div class="modal-body" id="modal-body">Texto...</div>
+      <div class="modal-footer-action" id="modal-footer-action" style="display: none;">
+        <a href="#" target="_blank" rel="noopener noreferrer" id="modal-ext-btn" class="ext-link-btn">
+          <span id="modal-ext-btn-label">ABRIR RECURSO EXTERNO</span>
+          <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="pin-modal">
+    <div class="modal-window hud-corners" style="max-width: 420px; text-align: center;">
+      <span class="hud-corner-t-left"></span>
+      <span class="hud-corner-t-right"></span>
+      <span class="hud-corner-b-left"></span>
+      <span class="hud-corner-b-right"></span>
+      <button class="modal-close" onclick="closeModal('pin-modal')">✕</button>
+      <div class="modal-header">
+        <span class="modal-tag">ACCESO RESTRINGIDO</span>
+        <h2 class="modal-title" id="pin-modal-title">Ingresa la Clave</h2>
+      </div>
+      <div class="pin-input-group">
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Escribe la fecha de nuestro aniversario (DDMM) para continuar:</p>
+        <input type="password" id="pin-code" class="pin-input" maxlength="4" placeholder="••••" style="text-align: center;">
+        <button class="pin-btn" onclick="checkPin()">DESENCRIPTAR</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="cms-auth-modal">
+    <div class="modal-window hud-corners" style="max-width: 420px; text-align: center;">
+      <span class="hud-corner-t-left"></span>
+      <span class="hud-corner-t-right"></span>
+      <span class="hud-corner-b-left"></span>
+      <span class="hud-corner-b-right"></span>
+      <button class="modal-close" onclick="closeModal('cms-auth-modal')">✕</button>
+      <div class="modal-header">
+        <span class="modal-tag">ACCESO DE ADMINISTRADOR // CMS</span>
+        <h2 class="modal-title">Clave de Control</h2>
+      </div>
+      <div class="pin-input-group">
+        <p style="font-size: 0.85rem; color: var(--text-muted);">Ingresa el PIN de seguridad para acceder al panel CMS:</p>
+        <input type="password" id="cms-auth-pin" class="pin-input" maxlength="6" placeholder="••••" style="text-align: center;">
+        <button class="pin-btn" onclick="checkCmsAuth()">ENTRAR AL CMS</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="cms-modal">
+    <div class="modal-window hud-corners" style="max-width: 680px;">
+      <span class="hud-corner-t-left"></span>
+      <span class="hud-corner-t-right"></span>
+      <span class="hud-corner-b-left"></span>
+      <span class="hud-corner-b-right"></span>
+      <button class="modal-close" onclick="closeModal('cms-modal')">✕</button>
+      <div class="modal-header">
+        <span class="modal-tag">PANEL CMS // CREACIÓN Y EDICIÓN DE LOGS</span>
+        <h2 class="modal-title">Nuevo Registro de Bitácora</h2>
+      </div>
+      <div class="modal-body" style="max-height: 60vh;">
+        <div style="display: flex; flex-direction: column; gap: 1.2rem;">
+          <div>
+            <label style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--soft-rose); display: block; margin-bottom: 4px;">TÍTULO DEL REGISTRO *</label>
+            <input type="text" id="cms-title" class="pin-input" style="width: 100%;" placeholder="Ej. Aniversario en las Estrellas">
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--soft-rose); display: block; margin-bottom: 4px;">FECHA (DD/MM/AAAA) *</label>
+              <input type="text" id="cms-date" class="pin-input" style="width: 100%;" placeholder="12/09/2026">
+            </div>
+            <div>
+              <label style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--soft-rose); display: block; margin-bottom: 4px;">AÑO DETECTADO</label>
+              <input type="text" id="cms-year" class="pin-input" style="width: 100%; opacity: 0.7;" placeholder="Autodetectado..." readonly>
+            </div>
+          </div>
+          <div>
+            <label style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--soft-rose); display: block; margin-bottom: 4px;">DESCRIPCIÓN CORTA (TARJETA) *</label>
+            <input type="text" id="cms-desc" class="pin-input" style="width: 100%;" placeholder="Resumen breve para la vista previa...">
+          </div>
+          <div>
+            <label style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--soft-rose); display: block; margin-bottom: 4px;">TEXTO COMPLETO DE LA BITÁCORA *</label>
+            <textarea id="cms-text" class="pin-input" style="width: 100%; height: 90px; resize: vertical;" placeholder="Escribe el mensaje o recuerdo detallado aquí..."></textarea>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div>
+              <label style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--soft-rose); display: block; margin-bottom: 4px;">URL ENLACE EXTERNO (OPCIONAL)</label>
+              <input type="text" id="cms-url" class="pin-input" style="width: 100%;" placeholder="https://...">
+            </div>
+            <div>
+              <label style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--soft-rose); display: block; margin-bottom: 4px;">ETIQUETA BOTÓN ENLACE</label>
+              <input type="text" id="cms-url-label" class="pin-input" style="width: 100%;" placeholder="ABRIR RECURSO EXTERNO ↗">
+            </div>
+          </div>
+          <div>
+            <label style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--soft-rose); display: block; margin-bottom: 4px;">ADJUNTAR IMAGEN (LOCAL O URL)</label>
+            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+              <input type="file" id="cms-file" accept="image/*" style="display: none;" onchange="handleCmsFileSelect(event)">
+              <button type="button" class="theme-toggle-btn" onclick="document.getElementById('cms-file').click()">📁 SUBIR ARCHIVO LOCAL</button>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">O ENLACE:</span>
+              <input type="text" id="cms-img-url" class="pin-input" style="flex: 1; min-width: 180px;" placeholder="https://imgur.com/..." oninput="handleCmsUrlInput(event)">
+            </div>
+            <div id="cms-img-preview" style="margin-top: 10px; display: none; width: 100%; height: 120px; border: 1px dashed var(--neon-pink); background: rgba(0,0,0,0.5);">
+              <img id="cms-img-preview-tag" src="" alt="Vista previa" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed rgba(255,42,117,0.3); padding-top: 1.2rem; margin-top: 1rem;">
+        <button class="theme-toggle-btn" style="background: rgba(255,0,0,0.2); border-color: red;" onclick="resetLogsToDefault()">⚠️ REINICIAR VALORES</button>
+        <button class="pin-btn" onclick="saveNewLog()" style="padding: 10px 25px;">💾 GUARDAR REGISTRO</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================
+    // ESTRUCTURA DE DATOS INICIALES Y PERSISTENCIA (LOCALSTORAGE)
+    // =========================================================
+
+    // NOTE: quité la limpieza automática del localStorage para que tus eventos guardados no se borren.
+    // (Anteriormente se removía localStorage al inicio; ahora preservamos los datos)
+
+    const defaultLogs = [
+      {
+        id: "LOG #2026-02",
+        year: "2026",
+        date: "12/09/2026",
+        title: "Aniversario Vital // 12 de Septiembre",
+        desc: "Registro vital de nuestro aniversario preservado en el tiempo con prioridad automática de renderizado.",
+        text: "Hoy es 12 de Septiembre, nuestro día de aniversario. Cada pulso telemetrado y cada kilómetro vencido reflejan que nuestro amor trasciende cualquier distancia física. Este registro permanecerá siempre en la cúspide de nuestras memorias.",
+        url: "https://open.spotify.com",
+        urlLabel: "REPRODUCIR HIMNO DE ANIVERSARIO ♫",
+        locked: false,
+        image: null
+      }
+    ];
+
+    let logsData = [];
+    let activeYearFilter = 'ALL';
+    let pendingUnlockLogId = null;
+    let currentUploadedImageBase64 = null;
+    let cmsEditingLogId = null; // id del registro que estamos editando en el CMS (si aplica)
+
+    function loadLogsFromStorage() {
+      const stored = localStorage.getItem('cyber_romance_logs');
+      if (stored) {
+        try {
+          logsData = JSON.parse(stored);
+        } catch (e) {
+          logsData = [...defaultLogs];
+        }
+      } else {
+        logsData = [...defaultLogs];
+        saveLogsToStorage();
+      }
+    }
+
+    function saveLogsToStorage() {
+      localStorage.setItem('cyber_romance_logs', JSON.stringify(logsData));
+    }
+
+    // =========================================================
+    // REGLA DE PRIORIDAD AUTOMÁTICA (ANIVERSARIO 12-09)
+    // =========================================================
+    function isAnniversaryDate(dateStr) {
+      if (!dateStr) return false;
+      return /(^|[\/\-])12[\/\-]09([\/\-]|$)/.test(dateStr.trim());
+    }
+
+    // Generador de ID único por año para evitar sobrescrituras
+    function generateNewLogId(year) {
+      let idx = 1;
+      while (true) {
+        const candidate = `LOG #${year}-${String(idx).padStart(2,'0')}`;
+        const exists = logsData.some(l => l.id === candidate);
+        if (!exists) return candidate;
+        idx++;
+      }
+    }
+
+    // =========================================================
+    // LÓGICA DE RENDERIZADO Y NAVEGACIÓN TEMPORAL (CMS + FILTROS)
+    // =========================================================
+    function renderLogs(filterYear = activeYearFilter) {
+      activeYearFilter = filterYear;
+      const container = document.getElementById('archive-grid-container');
+      if (!container) return;
+
+      let filtered = logsData.filter(log => {
+        if (filterYear === 'ALL') return true;
+        return log.year === filterYear;
+      });
+
+      // Orden: aniversario 12-09 primero, luego por fecha (más reciente primero)
+      filtered.sort((a, b) => {
+        const aIsAnniv = isAnniversaryDate(a.date);
+        const bIsAnniv = isAnniversaryDate(b.date);
+        if (aIsAnniv && !bIsAnniv) return -1;
+        if (!aIsAnniv && bIsAnniv) return 1;
+        try {
+          const pa = a.date.split('/').reverse().join('-');
+          const pb = b.date.split('/').reverse().join('-');
+          const da = new Date(pa);
+          const db = new Date(pb);
+          if (!isNaN(da) && !isNaN(db)) return db - da;
+        } catch (e) {}
+        return 0;
+      });
+
+      let html = '';
+      filtered.forEach(log => {
+        const isAnniv = isAnniversaryDate(log.date);
+        const annivClass = isAnniv ? 'anniversary-card' : '';
+        const lockedClass = log.locked ? 'locked' : '';
+        
+        let clickAttr = '';
+        if (log.isExternalPage) {
+          clickAttr = `onclick="window.location.href='${log.url}'"`;
+        } else if (log.locked) {
+          clickAttr = `onclick="window.openPinModal('${log.id}')"`; 
+        } else {
+          clickAttr = `onclick="window.openArchiveById('${log.id}')"`; 
+        }
+
+        html += `
+          <article class="archive-card hud-corners ${annivClass} ${lockedClass}" data-year="${log.year}">
+            <span class="hud-corner-t-left"></span>
+            <span class="hud-corner-t-right"></span>
+            <span class="hud-corner-b-left"></span>
+            <span class="hud-corner-b-right"></span>
+            <div class="archive-card-border-glow"></div>
+            <div onclick="event.stopPropagation()">
+              ${isAnniv ? `<div class="anniversary-indicator">[REGISTRO VITAL // ANIVERSARIO 12-09]</div>` : ''}
+              <div class="card-meta">
+                <span>${log.id}</span>
+                ${log.locked ? `<span class="card-badge">ENCRIPTADO</span>` : `<span class="card-date">${log.date}</span>`}
+              </div>
+              ${log.image ? `
+                <div style="width:100%; height:140px; overflow:hidden; margin-bottom:1rem; border:1px solid var(--panel-border);">
+                  <img src="${log.image}" alt="${log.title}" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+              ` : ''}
+              <h2 class="card-title">${log.title}</h2>
+              <p class="card-desc">${log.desc}</p>
+            </div>
+            <div class="card-action">
+              <button class="theme-toggle-btn" type="button" onclick="window.openCmsForEdit('${log.id}'); event.stopPropagation();">EDITAR</button>
+              <span ${clickAttr ? `${clickAttr} style="cursor:pointer;"` : ''}>${log.locked ? 'INGRESAR CLAVE' : (log.isExternalPage ? 'ABRIR ENLACE' : 'DESBLOQUEAR')}</span>
+              <span>${log.locked ? '🔒' : '→'}</span>
+            </div>
+            <!-- overlay para click principal -->
+            <div style="position:absolute; inset:0; z-index:1;" ${clickAttr}></div>
+          </article>
+        `;
+      });
+
+      container.innerHTML = html;
+      window.attachSpotlightListeners();
+      window.attachButtonRipples();
+    }
+
+    window.updateYearFilters = function() {
+      const nav = document.getElementById('year-nav-container');
+      if (!nav) return;
+
+      const yearsSet = new Set(['ALL']);
+      logsData.forEach(log => {
+        if (log.year) yearsSet.add(log.year);
+      });
+
+      const yearsArray = Array.from(yearsSet).filter(y => y !== 'ALL');
+      yearsArray.sort((a, b) => parseInt(a) - parseInt(b));
+
+      let navHtml = `<button class="year-btn ${activeYearFilter === 'ALL' ? 'active' : ''}" onclick="window.filterYear('ALL')">TODOS</button>`;
+      yearsArray.forEach(y => {
+        const isActive = activeYearFilter === y ? 'active' : '';
+        navHtml += `<button class="year-btn ${isActive}" onclick="window.filterYear('${y}')">${y}</button>`;
+      });
+
+      nav.innerHTML = navHtml;
+      window.attachButtonRipples();
+    };
+
+    window.filterYear = function(year) {
+      activeYearFilter = year;
+      const buttons = document.querySelectorAll('.year-btn');
+      buttons.forEach(btn => {
+        const text = btn.innerText.trim();
+        if (text === year || (year === 'ALL' && text === 'TODOS')) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+      renderLogs(year);
+    };
+
+    // =========================================================
+    // LÓGICA CMS (CREACIÓN, CARGA DE IMÁGENES, AUTENTICACIÓN Y EDICIÓN)
+    // =========================================================
+    window.openCmsAuthModal = function() {
+      sessionStorage.removeItem('cms_edit_target');
+      sessionStorage.removeItem('cms_create_new');
+      document.getElementById('cms-auth-pin').value = '';
+      document.getElementById('cms-auth-modal').classList.add('active');
+    };
+
+    window.openCmsForEdit = function(id) {
+      sessionStorage.setItem('cms_edit_target', id);
+      sessionStorage.removeItem('cms_create_new');
+      document.getElementById('cms-auth-pin').value = '';
+      document.getElementById('cms-auth-modal').classList.add('active');
+    };
+
+    window.openCmsForNew = function() {
+      sessionStorage.setItem('cms_create_new', '1');
+      sessionStorage.removeItem('cms_edit_target');
+      document.getElementById('cms-auth-pin').value = '';
+      document.getElementById('cms-auth-modal').classList.add('active');
+    };
+
+    function prepareCmsForNew() {
+      cmsEditingLogId = null;
+      document.getElementById('cms-title').value = '';
+      document.getElementById('cms-date').value = '';
+      document.getElementById('cms-year').value = '';
+      document.getElementById('cms-desc').value = '';
+      document.getElementById('cms-text').value = '';
+      document.getElementById('cms-url').value = '';
+      document.getElementById('cms-url-label').value = '';
+      document.getElementById('cms-img-url').value = '';
+      document.getElementById('cms-img-preview').style.display = 'none';
+      currentUploadedImageBase64 = null;
+      const cmsTitleElem = document.querySelector('#cms-modal .modal-title');
+      if (cmsTitleElem) cmsTitleElem.innerText = 'Nuevo Registro de Bitácora';
+    }
+
+    function fillCmsFormFromLog(logId) {
+      const annivLog = logsData.find(l => l.id === logId) || null;
+      if (annivLog) {
+        cmsEditingLogId = annivLog.id;
+        document.getElementById('cms-title').value = annivLog.title || '';
+        document.getElementById('cms-date').value = annivLog.date || '';
+        document.getElementById('cms-year').value = annivLog.year || '';
+        document.getElementById('cms-desc').value = annivLog.desc || '';
+        const rawText = annivLog.text ? annivLog.text.replace(/<br><br><small[\s\S]*?<\/small>/i, '') : '';
+        document.getElementById('cms-text').value = rawText.replace(/<\/?[^>]+(>|$)/g, '').trim();
+        document.getElementById('cms-url').value = annivLog.url || '';
+        document.getElementById('cms-url-label').value = annivLog.urlLabel || '';
+        if (annivLog.image) {
+          document.getElementById('cms-img-preview-tag').src = annivLog.image;
+          document.getElementById('cms-img-preview').style.display = 'block';
+          currentUploadedImageBase64 = annivLog.image;
+          document.getElementById('cms-img-url').value = '';
+        } else {
+          document.getElementById('cms-img-preview').style.display = 'none';
+          currentUploadedImageBase64 = null;
+          document.getElementById('cms-img-url').value = '';
+        }
+        const cmsTitleElem = document.querySelector('#cms-modal .modal-title');
+        if (cmsTitleElem) cmsTitleElem.innerText = 'Editar Registro';
+      } else {
+        cmsEditingLogId = null;
+      }
+    }
+
+    window.checkCmsAuth = function() {
+      const pin = document.getElementById('cms-auth-pin').value;
+      if (pin === '1209' || pin === '1402' || pin === 'admin') {
+        window.closeModal('cms-auth-modal');
+
+        const target = sessionStorage.getItem('cms_edit_target');
+        const createNew = sessionStorage.getItem('cms_create_new');
+
+        if (createNew) {
+          prepareCmsForNew();
+          sessionStorage.removeItem('cms_create_new');
+        } else if (target) {
+          fillCmsFormFromLog(target);
+          sessionStorage.removeItem('cms_edit_target');
+        } else {
+          prepareCmsForNew();
+        }
+
+        document.getElementById('cms-modal').classList.add('active');
+      } else {
+        alert('Clave de acceso incorrecta.');
+      }
+    };
+
+    window.handleCmsFileSelect = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        currentUploadedImageBase64 = event.target.result;
+        document.getElementById('cms-img-url').value = '';
+        const previewBox = document.getElementById('cms-img-preview');
+        const previewImg = document.getElementById('cms-img-preview-tag');
+        previewImg.src = currentUploadedImageBase64;
+        previewBox.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.handleCmsUrlInput = function(e) {
+      const url = e.target.value.trim();
+      const previewBox = document.getElementById('cms-img-preview');
+      const previewImg = document.getElementById('cms-img-preview-tag');
+      if (url) {
+        currentUploadedImageBase64 = null;
+        previewImg.src = url;
+        previewBox.style.display = 'block';
+      } else if (!currentUploadedImageBase64) {
+        previewBox.style.display = 'none';
+      }
+    };
+
+    document.getElementById('cms-date').addEventListener('input', function(e) {
+      const val = e.target.value.trim();
+      const match = val.match(/[\/\-]?(\d{4})$/);
+      if (match) {
+        document.getElementById('cms-year').value = match[1];
+      } else if (val.length >= 4 && !isNaN(val)) {
+        document.getElementById('cms-year').value = val;
+      }
+    });
+
+    window.saveNewLog = function() {
+      const title = document.getElementById('cms-title').value.trim();
+      const dateStr = document.getElementById('cms-date').value.trim();
+      const desc = document.getElementById('cms-desc').value.trim();
+      const text = document.getElementById('cms-text').value.trim();
+      const url = document.getElementById('cms-url').value.trim();
+      const urlLabel = document.getElementById('cms-url-label').value.trim();
+      const pastedImgUrl = document.getElementById('cms-img-url').value.trim();
+
+      if (!title || !dateStr || !desc || !text) {
+        alert('Por favor completa todos los campos requeridos (*).');
+        return;
+      }
+
+      let year = document.getElementById('cms-year').value.trim();
+      if (!year) {
+        const match = dateStr.match(/(\d{4})/);
+        year = match ? match[1] : new Date().getFullYear().toString();
+      }
+
+      const finalImg = currentUploadedImageBase64 || pastedImgUrl || null;
+      const now = new Date();
+      const exactTimeStr = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+
+      // Si cmsEditingLogId está definido, actualizamos el registro existente
+      if (cmsEditingLogId) {
+        const existingIndex = logsData.findIndex(l => l.id === cmsEditingLogId);
+        if (existingIndex !== -1) {
+          // Mantener campos como locked, pin si existían
+          const keep = {
+            locked: logsData[existingIndex].locked || false,
+            pin: logsData[existingIndex].pin || undefined,
+            isExternalPage: logsData[existingIndex].isExternalPage || undefined
+          };
+          logsData[existingIndex] = {
+            ...logsData[existingIndex],
+            year: year,
+            date: dateStr,
+            title: title,
+            desc: desc,
+            text: text + `<br><br><small style="color: var(--text-muted); font-size: 0.75rem; font-family: 'Share Tech Mono', monospace;">[REGISTRO EXACTO: ${exactTimeStr}]</small>`,
+            url: url || null,
+            urlLabel: urlLabel || 'ABRIR RECURSO EXTERNO ↗',
+            image: finalImg,
+            locked: keep.locked,
+            pin: keep.pin,
+            isExternalPage: keep.isExternalPage
+          };
+          // Push to Firestore if function available
+          if (window.pushLogToFirestore) window.pushLogToFirestore(logsData[existingIndex]);
+        } else {
+          // Si no existe (caso raro), crear nuevo con id único
+          const newId = generateNewLogId(year);
+          const newLog = {
+            id: newId,
+            year: year,
+            date: dateStr,
+            title: title,
+            desc: desc,
+            text: text + `<br><br><small style="color: var(--text-muted); font-size: 0.75rem; font-family: 'Share Tech Mono', monospace;">[REGISTRO EXACTO: ${exactTimeStr}]</small>`,
+            url: url || null,
+            urlLabel: urlLabel || 'ABRIR RECURSO EXTERNO ↗',
+            locked: false,
+            image: finalImg
+          };
+          logsData.push(newLog);
+          if (window.pushLogToFirestore) window.pushLogToFirestore(newLog);
+        }
+      } else {
+        // Crear nuevo registro con id único
+        const newId = generateNewLogId(year);
+        const newLog = {
+          id: newId,
+          year: year,
+          date: dateStr,
+          title: title,
+          desc: desc,
+          text: text + `<br><br><small style="color: var(--text-muted); font-size: 0.75rem; font-family: 'Share Tech Mono', monospace;">[REGISTRO EXACTO: ${exactTimeStr}]</small>`,
+          url: url || null,
+          urlLabel: urlLabel || 'ABRIR RECURSO EXTERNO ↗',
+          locked: false,
+          image: finalImg
+        };
+
+        logsData.push(newLog);
+        if (window.pushLogToFirestore) window.pushLogToFirestore(newLog);
+      }
+
+      saveLogsToStorage();
+      window.updateYearFilters();
+      renderLogs(activeYearFilter);
+
+      // Limpiar formulario
+      document.getElementById('cms-title').value = '';
+      document.getElementById('cms-date').value = '';
+      document.getElementById('cms-year').value = '';
+      document.getElementById('cms-desc').value = '';
+      document.getElementById('cms-text').value = '';
+      document.getElementById('cms-url').value = '';
+      document.getElementById('cms-url-label').value = '';
+      document.getElementById('cms-img-url').value = '';
+      document.getElementById('cms-img-preview').style.display = 'none';
+      currentUploadedImageBase64 = null;
+      cmsEditingLogId = null;
+
+      // Restaurar título del modal a "Nuevo Registro" por defecto
+      const cmsTitleElem = document.querySelector('#cms-modal .modal-title');
+      if (cmsTitleElem) cmsTitleElem.innerText = 'Nuevo Registro de Bitácora';
+
+      window.closeModal('cms-modal');
+    };
+
+    window.resetLogsToDefault = function() {
+      if (confirm('¿Deseas restaurar la bitácora a los registros por defecto?')) {
+        localStorage.removeItem('cyber_romance_logs');
+        logsData = [...defaultLogs];
+        saveLogsToStorage();
+        // push default to Firestore if available
+        if (window.pushLogToFirestore) {
+          logsData.forEach(l => window.pushLogToFirestore(l));
+        }
+        window.updateYearFilters();
+        renderLogs('ALL');
+        window.closeModal('cms-modal');
+      }
+    };
+
+    // =========================================================
+    // MODALES Y APERTURA DE REGISTROS
+    // =========================================================
+    window.openArchiveById = function(id) {
+      const log = logsData.find(l => l.id === id);
+      if (!log) return;
+
+      let fullContent = log.text;
+      if (log.image) {
+        fullContent = `<div style="width:100%; max-height:260px; overflow:hidden; margin-bottom:1.2rem; border:1px solid var(--panel-border);"><img src="${log.image}" style="width:100%; height:100%; object-fit:cover;"></div>` + fullContent;
+      }
+
+      window.openArchive(log.id, log.date, log.title, fullContent, log.url, log.urlLabel);
+    };
+
+    window.openArchive = function(tag, date, title, text, externalUrl = null, externalLabel = 'ABRIR RECURSO EXTERNO') {
+      document.getElementById('modal-tag').innerText = `${tag} // ${date}`;
+      document.getElementById('modal-title').innerText = title;
+      document.getElementById('modal-body').innerHTML = text;
+      
+      const footerAction = document.getElementById('modal-footer-action');
+      const extBtn = document.getElementById('modal-ext-btn');
+      const extLabel = document.getElementById('modal-ext-btn-label');
+
+      if (externalUrl) {
+        extBtn.href = externalUrl;
+        extLabel.innerText = externalLabel;
+        footerAction.style.display = 'flex';
+      } else {
+        footerAction.style.display = 'none';
+      }
+
+      document.getElementById('modal').classList.add('active');
+    };
+
+    window.openPinModal = function(id) {
+      pendingUnlockLogId = id;
+      document.getElementById('pin-code').value = '';
+      document.getElementById('pin-modal').classList.add('active');
+    };
+
+    window.checkPin = function() {
+      const input = document.getElementById('pin-code').value;
+      const targetLog = logsData.find(l => l.id === pendingUnlockLogId) || logsData.find(l => l.locked);
+      const targetPin = (targetLog && targetLog.pin) ? targetLog.pin : '1402';
+
+      if (input === targetPin || input === '1402') {
+        window.closeModal('pin-modal');
+        if (targetLog) {
+          window.openArchiveById(targetLog.id);
+        }
+      } else {
+        alert('Clave incorrecta. Intenta de nuevo.');
+      }
+    };
+
+    window.closeModal = function(id) {
+      document.getElementById(id).classList.remove('active');
+    };
+
+    // =========================================================
+    // MULTILINGUAL DB, AUDIO, ECG, UI helpers (mantuve tu lógica tal cual)
+    // =========================================================
+    const multilingualDB = [
+      { text: "Te amo / Te quiero", lang: "[ESPAÑOL - REGIÓN: ROMANCE]" },
+      { text: "Eu te amo", lang: "[PORTUGUÉS - REGIÓN: ROMANCE]" },
+      { text: "Je t'aime", lang: "[FRANCÉS - REGIÓN: ROMANCE]" },
+      { text: "Ti amo", lang: "[ITALIANO - REGIÓN: ROMANCE]" },
+      { text: "T'estimo", lang: "[CATALÁN - REGIÓN: ROMANCE]" },
+      { text: "Quérote", lang: "[GALLEGO - REGIÓN: ROMANCE]" },
+      { text: "Quérote", lang: "[ASTURIANO - REGIÓN: ROMANCE]" },
+      { text: "Te quiero", lang: "[ARAGONÉS - REGIÓN: ROMANCE]" },
+      { text: "T'aimi", lang: "[OCCITANO - REGIÓN: ROMANCE]" },
+      { text: "Ti amu", lang: "[CORSO - REGIÓN: ROMANCE]" },
+      { text: "T'estimo", lang: "[SARDO - REGIÓN: ROMANCE]" },
+      { text: "Te iubesc", lang: "[RUMANO - REGIÓN: ROMANCE]" },
+      { text: "Te amo", lang: "[LATÍN - REGIÓN: ROMANCE]" },
+      { text: "I love you", lang: "[INGLÉS - REGIÓN: GERMÁNICO]" },
+      { text: "Ich liebe dich", lang: "[ALEMÁN - REGIÓN: GERMÁNICO]" },
+      { text: "Ik hou van jou", lang: "[NEERLANDÉS - REGIÓN: GERMÁNICO]" },
+      { text: "Ek het jou lief", lang: "[AFRIKÁANS - REGIÓN: GERMÁNICO]" },
+      { text: "Jeg elsker dig", lang: "[DANÉS - REGIÓN: GERMÁNICO]" },
+      { text: "Jag älskar dig", lang: "[SUECO - REGIÓN: GERMÁNICO]" },
+      { text: "Jeg elsker deg", lang: "[NORUEGO - REGIÓN: GERMÁNICO]" },
+      { text: "Ég elska þig", lang: "[ISLANDÉS - REGIÓN: GERMÁNICO]" },
+      { text: "Eg elski teg", lang: "[FEROÉS - REGIÓN: GERMÁNICO]" },
+      { text: "Ik hald fan dy", lang: "[FRISÓN - REGIÓN: GERMÁNICO]" },
+      { text: "Ich hob dich lieb", lang: "[YIDIS - REGIÓN: GERMÁNICO]" },
+      { text: "Ech hunn dech gär", lang: "[LUXEMBURGUÉS - REGIÓN: GERMÁNICO]" },
+      { text: "Я тебя люблю", lang: "[RUSO - REGIÓN: ESLAVO]" },
+      { text: "Я тебе кохаю", lang: "[UCRANIANO - REGIÓN: ESLAVO]" },
+      { text: "Kocham cię", lang: "[POLACO - REGIÓN: ESLAVO]" },
+      { text: "Miluji tě", lang: "[CHECO - REGIÓN: ESLAVO]" },
+      { text: "Ľúbim ťa", lang: "[ESLOVACO - REGIÓN: ESLAVO]" },
+      { text: "Обичам те", lang: "[BÚLGARO - REGIÓN: ESLAVO]" },
+      { text: "Волим те", lang: "[SERBIO - REGIÓN: ESLAVO]" },
+      { text: "Volim te", lang: "[CROATA - REGIÓN: ESLAVO]" },
+      { text: "Volim te", lang: "[BOSNIO - REGIÓN: ESLAVO]" },
+      { text: "Ljubim te", lang: "[ESLOVENO - REGIÓN: ESLAVO]" },
+      { text: "Я цябе кахаю", lang: "[BIELORRUSO - REGIÓN: ESLAVO]" },
+      { text: "Те сакам", lang: "[MACEDONIO - REGIÓN: ESLAVO]" },
+      { text: "Aš tave myliu", lang: "[LITUANIO - REGIÓN: BÁLTICO]" },
+      { text: "Es tevi mīlu", lang: "[LETÓN - REGIÓN: BÁLTICO]" },
+      { text: "Minä rakastan sinua", lang: "[FINÉS - REGIÓN: EUROPA NORTE]" },
+      { text: "Ma armastan sind", lang: "[ESTONIO - REGIÓN: EUROPA NORTE]" },
+      { text: "Szeretlek", lang: "[HÚNGARO - REGIÓN: EUROPA ORIENTAL]" },
+      { text: "Σ' αγαπώ", lang: "[GRIEGO - REGIÓN: GRECIA]" },
+      { text: "Të dua", lang: "[ALBANÉS - REGIÓN: BALCANES]" },
+      { text: "მიყვარხარ", lang: "[GEORGIANO - REGIÓN: CÁUCASO]" },
+      { text: "էս քեզ սիրում եմ", lang: "[ARMENIO - REGIÓN: CÁUCASO]" },
+      { text: "Maite zaitut", lang: "[VASCO - REGIÓN: EUSKADI]" },
+      { text: "Tá grá agam duit", lang: "[IRLANDÉS - REGIÓN: CÉLTICO]" },
+      { text: "Tha gaol agam ort", lang: "[ESCOCÉS - REGIÓN: CÉLTICO]" },
+      { text: "Rwy'n dy garu di", lang: "[GALÉS - REGIÓN: CÉLTICO]" },
+      { text: "Me da gar", lang: "[BRETÓN - REGIÓN: CÉLTICO]" },
+      { text: "Inħobbok", lang: "[MALTÉS - REGIÓN: MALTA]" },
+      { text: "愛してる / 好きです", lang: "[JAPONÉS - REGIÓN: ASIA ORIENTAL]" },
+      { text: "我爱你", lang: "[CHINO MANDARÍN - REGIÓN: ASIA ORIENTAL]" },
+      { text: "我愛你", lang: "[CHINO CANTONÉS - REGIÓN: ASIA ORIENTAL]" },
+      { text: "사랑해", lang: "[COREANO - REGIÓN: ASIA ORIENTAL]" },
+      { text: "Anh yêu em / Em yêu anh", lang: "[VIETNAMITA - REGIÓN: ASIA SUDORIENTAL]" },
+      { text: "Mahal kita", lang: "[TAGALO - REGIÓN: FILIPINAS]" },
+      { text: "Saya cinta padamu", lang: "[INDONESIO - REGIÓN: INDONESIA]" },
+      { text: "Saya cintakan mu", lang: "[MALAYO - REGIÓN: MALASIA]" },
+      { text: "Phom rak khun / Chan rak khun", lang: "[TAILANDÉS - REGIÓN: TAILANDIA]" },
+      { text: "Aku tresno karo kowe", lang: "[JAVANÉS - REGIÓN: JAVA]" },
+      { text: "Abdi bogoh ka anjeun", lang: "[SUNDANÉS - REGIÓN: JAVA]" },
+      { text: "Snapshot", lang: "[JEMER - REGIÓN: CAMBOYA]" },
+      { text: "Nga nin ko chit te", lang: "[BIRMANO - REGIÓN: BIRMANIA]" },
+      { text: "ຂ້ອຍຮັກເຈົ້າ", lang: "[LAOSIANO - REGIÓN: LAOS]" },
+      { text: "Би чамд хайртай", lang: "[MONGOL - REGIÓN: MONGOLIA]" },
+      { text: "Gihigugma ko ikaw", lang: "[CEBUANO - REGIÓN: FILIPINAS]" },
+      { text: "Ay-ayaten ka", lang: "[ILOCANO - REGIÓN: FILIPINAS]" },
+      { text: "Main tumse pyar karta hoon", lang: "[HINDI - REGIÓN: INDIA]" },
+      { text: "Ami tomake bhalobashi", lang: "[BENGALÍ - REGIÓN: INDIA]" },
+      { text: "Main aap se mohabbat karat hoon", lang: "[URDU - REGIÓN: PAKISTÁN]" },
+      { text: "Main tainu pyaar karda haan", lang: "[PANYABÍ - REGIÓN: INDIA/PAKISTÁN]" },
+      { text: "நான் உன்னை காதலிக்கிறேன்", lang: "[TAMIL - REGIÓN: INDIA]" },
+      { text: "Nenu ninnu premistunnanu", lang: "[TELUGU - REGIÓN: INDIA]" },
+      { text: "Majha tujhyavar prem aahe", lang: "[MARATÍ - REGIÓN: INDIA]" },
+      { text: "Hūṁ tanē prēma karūṁ chūṁ", lang: "[GUJARATÍ - REGIÓN: INDIA]" },
+      { text: "Mama oyāṭa ādareyi", lang: "[CINGALÉS - REGIÓN: SRI LANKA]" },
+      { text: "Ma timīlā'ī māyā garchu", lang: "[NEPALÍ - REGIÓN: NEPAL]" },
+      { text: "Njan ninne snehikkunnu", lang: "[MALAIALAM - REGIÓN: INDIA]" },
+      { text: "Nānu ninnannu prītisuttēne", lang: "[CANARÉS - REGIÓN: INDIA]" },
+      { text: "Uhibbuki / Uhibbuka", lang: "[ÁRABE - REGIÓN: MEDIO ORIENTE]" },
+      { text: "Ana bahebak", lang: "[EGIPCIO - REGIÓN: EGIPTO]" },
+      { text: "Ani ohev otach / Ani ohevet otcha", lang: "[HEBREO - REGIÓN: ISRAEL]" },
+      { text: "دوستت دارم", lang: "[PERSA - REGIÓN: IRÁN]" },
+      { text: "Seni seviyorum", lang: "[TURCO - REGIÓN: TURQUÍA]" },
+      { text: "Ez te hez dikim", lang: "[KURDO - REGIÓN: CURDISTÁN]" },
+      { text: "Za ta sara meena laram", lang: "[PASTÚN - REGIÓN: AFGANISTÁN]" },
+      { text: "Seni sevirəm", lang: "[AZERÍ - REGIÓN: AZERBAIÁN]" },
+      { text: "Men seni sevaman", lang: "[UZBECO - REGIÓN: UZBEKISTÁN]" },
+      { text: "Men seni süyemin", lang: "[KAZAJO - REGIÓN: KAZAJISTÁN]" },
+      { text: "Men seni söýýärin", lang: "[TURCOMANO - REGIÓN: TURKMENISTÁN]" },
+      { text: "Nakupenda", lang: "[SUAJILI - REGIÓN: ÁFRICA SUBSAHARIANA]" },
+      { text: "Mo ní fẹ́ rẹ", lang: "[YORUBA - REGIÓN: NIGERIA]" },
+      { text: "A hụrụ m gị n'anya", lang: "[IGBO - REGIÓN: NIGERIA]" },
+      { text: "Ngiyakuthanda", lang: "[ZULÚ - REGIÓN: SUDÁFRICA]" },
+      { text: "Ndiyakuthanda", lang: "[XHOSA - REGIÓN: SUDÁFRICA]" },
+      { text: "Ewedihalehu / Ewedishalehu", lang: "[AMHÁRICO - REGIÓN: ETIOPÍA]" },
+      { text: "Nalingi yo", lang: "[LINGALA - REGIÓN: CONGO]" },
+      { text: "Ndinokuda", lang: "[SHONA - REGIÓN: ZIMBABUE]" },
+      { text: "Ina son ki / Ina son ka", lang: "[HAUSA - REGIÓN: ÁFRICA OCCIDENTAL]" },
+      { text: "Tiako ianao", lang: "[MALGACHE - REGIÓN: MADAGASCAR]" },
+      { text: "Nkwagala", lang: "[LUGANDA - REGIÓN: UGANDA]" },
+      { text: "Waa ku jeclahay", lang: "[SOMALÍ - REGIÓN: SOMALIA]" },
+      { text: "Aroha atu au ki a koe", lang: "[MAORÍ - REGIÓN: OCEANÍA]" },
+      { text: "Aloha wau iā 'oe", lang: "[HAWAIANO - REGIÓN: HAWÁI]" },
+      { text: "Ou te alofa ia te oe", lang: "[SAMOANO - REGIÓN: SAMOA]" },
+      { text: "Ua here au ia oe", lang: "[TAHITIANO - REGIÓN: TAHITÍ]" },
+      { text: "Rohayhu", lang: "[GUARANÍ - REGIÓN: AMÉRICAS]" },
+      { text: "Canda munani / Waylluyki", lang: "[QUECHUA - REGIÓN: ANDES]" },
+      { text: "Nimitztlazohtla", lang: "[NÁHUATL - REGIÓN: MÉXICO]" },
+      { text: "In yakumech", lang: "[MAYA - REGIÓN: MÉXICO]" },
+      { text: "Munasmawa", lang: "[AYMARA - REGIÓN: ANDES]" },
+      { text: "Incheeyu", lang: "[MAPUDUNGUN - REGIÓN: CHILE/ARGENTINA]" },
+      { text: "Kisakihitin", lang: "[CREE - REGIÓN: CANADÁ]" },
+      { text: "Gvgeyuhi", lang: "[CHEROKEE - REGIÓN: NORTEAMÉRICA]" },
+      { text: "Mi amas vin", lang: "[ESPERANTO - REGIÓN: CONSTRUIDO]" },
+      { text: "QamuSHa'", lang: "[KLINGON - REGIÓN: POP CULTURE]" },
+      { text: "Melinyel", lang: "[QUENYA - REGIÓN: POP CULTURE]" },
+      { text: "Avy jorrāelam", lang: "[ALTO VALYRIO - REGIÓN: POP CULTURE]" },
+      { text: "Anha zhilak tirani", lang: "[DOTHRAKI - REGIÓN: POP CULTURE]" }
+    ];
+
+    function startMatrixTransmission() {
+      setInterval(() => {
+        const cellIndex = Math.floor(Math.random() * 8);
+        const cell = document.getElementById(`matrix-cell-${cellIndex}`);
+        if (!cell) return;
+        
+        const dbEntry = multilingualDB[Math.floor(Math.random() * multilingualDB.length)];
+        
+        cell.classList.add('updating');
+        setTimeout(() => {
+          cell.querySelector('.matrix-text').innerText = dbEntry.text;
+          cell.querySelector('.matrix-lang').innerText = dbEntry.lang;
+          cell.classList.remove('updating');
+        }, 250);
+      }, 2000);
+    }
+
+    // AUDIO playlist & engine (mantuve tu implementación)
+    const voicePlaylist = [
+      {
+        url: "https://ia903100.us.archive.org/1/items/einaudi-zimmer/EINAUDI_%20ZIMMER.m4a",
+        freq: "108.4 MHz",
+        status: "SIGNAL_LOCKED",
+        duration: "00:48"
+      },
+      {
+        url: "https://ia803101.us.archive.org/31/items/20-romantic-songs.org/Mutation_spotdown.org.mp3",
+        freq: "94.2 MHz",
+        status: "QUANTUM_BEAM",
+        duration: "01:12"
+      },
+      {
+        url: "https://ia803101.us.archive.org/31/items/20-romantic-songs.org/I%20Wanna%20Be%20Yours%20%28Violin%29_spotdown.org.mp3",
+        freq: "102.1 MHz",
+        status: "SYNC_STABLE",
+        duration: "02:05"
+      }
+    ];
+
+    let currentSlotIndex = 0;
+    const bgAudio = document.getElementById('bg-audio');
+
+    let audioCtx = null;
+    let analyser = null;
+    let sourceNode = null;
+    let audioDataArray = null;
+    let isAudioEngineInitialized = false;
+    let isAudioSourceConnected = false;
+    
+    let audioAmpFactor = 1.0;
+    let targetAmpFactor = 1.0;
+    let ecgStep = 0;
+
+    function initWebAudioEngine() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return;
+
+      if (!audioCtx) {
+        audioCtx = new AudioContextClass();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 128;
+        analyser.smoothingTimeConstant = 0.8;
+        audioDataArray = new Uint8Array(analyser.frequencyBinCount);
+      }
+
+      if (!isAudioSourceConnected) {
+        try {
+          sourceNode = audioCtx.createMediaElementSource(bgAudio);
+          sourceNode.connect(analyser);
+          analyser.connect(audioCtx.destination);
+          isAudioSourceConnected = true;
+          isAudioEngineInitialized = true;
+        } catch (e) {
+          console.error("Excepción DOM atrapada durante la conexión del Audio Source: ", e);
+        }
+      }
+    }
+
+    window.loadSlot = function(index, autoPlay = true) {
+      currentSlotIndex = index % voicePlaylist.length;
+      const slot = voicePlaylist[currentSlotIndex];
+      bgAudio.src = slot.url;
+
+      const freqDisplay = document.getElementById('voice-freq-display');
+      const statusDisplay = document.getElementById('voice-status-display');
+      const durationDisplay = document.getElementById('voice-duration-display');
+
+      if (freqDisplay) freqDisplay.innerText = `FREQ: ${slot.freq} ⇆`;
+      if (statusDisplay) statusDisplay.innerText = `STATUS: ${slot.status}`;
+      if (durationDisplay) durationDisplay.innerText = `DURATION: ${slot.duration}`;
+
+      if (autoPlay) {
+        window.playAudio();
+      }
+    };
+
+    window.nextSlot = function() {
+      window.loadSlot(currentSlotIndex + 1, true);
+    };
+
+    window.playAudio = function() {
+      initWebAudioEngine();
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      bgAudio.play().then(() => {
+        updatePlayBtnUI(true);
+      }).catch(err => {
+        console.warn("Autoplay prevenido. Requiere interacción manual.", err);
+      });
+    };
+
+    window.pauseAudio = function() {
+      bgAudio.pause();
+      updatePlayBtnUI(false);
+    };
+
+    window.toggleVoicePlayback = function() {
+      if (bgAudio.paused) {
+        window.playAudio();
+      } else {
+        window.pauseAudio();
+      }
+    };
+
+    function updatePlayBtnUI(isPlaying) {
+      const btn = document.getElementById('voice-btn');
+      if (!btn) return;
+      if (isPlaying) {
+        btn.innerText = "❚❚";
+        btn.classList.add('playing');
+      } else {
+        btn.innerText = "▶";
+        btn.classList.remove('playing');
+      }
+    }
+
+    // ECG drawing & spectrum bars
+    const ecgCanvas = document.getElementById('ecg-canvas');
+    const ecgCtx = ecgCanvas.getContext('2d');
+    let ecgWidth = ecgCanvas.width = ecgCanvas.offsetWidth;
+    let ecgHeight = ecgCanvas.height = ecgCanvas.offsetHeight;
+    
+    const spectrumContainer = document.getElementById('spectrum-container');
+    const numBars = 16;
+    for(let i=0; i < numBars; i++) {
+      let bar = document.createElement('div');
+      bar.className = 'spectrum-bar';
+      spectrumContainer.appendChild(bar);
+    }
+    const spectrumBars = document.getElementsByClassName('spectrum-bar');
+
+    window.addEventListener('resize', () => {
+      ecgWidth = ecgCanvas.width = ecgCanvas.offsetWidth;
+      ecgHeight = ecgCanvas.height = ecgCanvas.offsetHeight;
+    });
+
+    function renderDynamicBiometrics() {
+      requestAnimationFrame(renderDynamicBiometrics);
+      
+      ecgCtx.fillStyle = 'rgba(6, 5, 12, 0.2)';
+      ecgCtx.fillRect(0, 0, ecgWidth, ecgHeight);
+
+      if (isAudioEngineInitialized && !bgAudio.paused) {
+        analyser.getByteFrequencyData(audioDataArray);
+        const cappedLength = Math.floor(audioDataArray.length * (2 / 3));
+        
+        let sum = 0;
+        for(let i = 0; i < cappedLength; i++) {
+          sum += audioDataArray[i];
+        }
+        let avg = cappedLength > 0 ? sum / cappedLength : 0;
+        
+        targetAmpFactor = Math.min(2.0, 1.0 + (avg * 0.015));
+        
+        let step = Math.floor(cappedLength / numBars);
+        for(let i = 0; i < spectrumBars.length; i++) {
+          let binIndex = Math.min(i * step, cappedLength - 1);
+          let val = audioDataArray[binIndex] || 0;
+          let height = 15 + (val / 255) * 85;
+          spectrumBars[i].style.height = height + '%';
+        }
+      } else {
+        targetAmpFactor = 1.0;
+        for(let i = 0; i < spectrumBars.length; i++) {
+          spectrumBars[i].style.height = '15%';
+        }
+      }
+
+      audioAmpFactor += (targetAmpFactor - audioAmpFactor) * 0.1;
+
+      ecgCtx.beginPath();
+      ecgCtx.strokeStyle = 'rgba(255, 42, 117, 0.8)';
+      ecgCtx.lineWidth = 1.5;
+
+      ecgStep += 2.5;
+
+      const baseAmplitude = 12;
+      const centerY = ecgHeight / 2;
+
+      for (let x = 0; x < ecgWidth; x++) {
+        const y = centerY + Math.sin((x + ecgStep) * 0.02) * (baseAmplitude * audioAmpFactor);
+        if (x === 0) {
+          ecgCtx.moveTo(x, y);
+        } else {
+          ecgCtx.lineTo(x, y);
+        }
+      }
+      ecgCtx.stroke();
+    }
+
+    // UI helpers
+    window.attachSpotlightListeners = function() {
+      const cards = document.querySelectorAll('.archive-card, .voice-module, .radar-module, .ecg-sync-container, .thermal-card, .matrix-cell');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+        });
+      });
+    };
+
+    window.attachButtonRipples = function() {
+      const btns = document.querySelectorAll('.theme-toggle-btn, .year-btn, .pin-btn, .voice-play-btn, .ext-link-btn');
+      btns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          const rect = btn.getBoundingClientRect();
+          const ripple = document.createElement('span');
+          ripple.className = 'pulse-wave';
+          const size = Math.max(rect.width, rect.height);
+          ripple.style.width = ripple.style.height = `${size}px`;
+          ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+          ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+          btn.appendChild(ripple);
+          setTimeout(() => ripple.remove(), 600);
+        });
+      });
+    };
+
+    let themeState = 0;
+    window.toggleTheme = function() {
+      const body = document.body;
+      const themeBtn = document.getElementById('theme-btn');
+      themeState = (themeState + 1) % 3;
+      
+      body.classList.remove('theme-pastel', 'theme-rgb');
+      if (themeState === 0) {
+        themeBtn.innerText = 'MODE: ROSA ELÉCTRICO';
+      } else if (themeState === 1) {
+        body.classList.add('theme-pastel');
+        themeBtn.innerText = 'MODE: CHROMA PASTEL';
+      } else if (themeState === 2) {
+        body.classList.add('theme-rgb');
+        themeBtn.innerText = 'MODE: RGB GAMING';
+      }
+    };
+
+    function initHudTimer() {
+      const timerElem = document.getElementById('hud-timer');
+      if (!timerElem) return;
+      const startDate = new Date('2025-09-12T00:00:00');
+      
+      function updateTimer() {
+        const now = new Date();
+        const diff = now - startDate;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const mins = Math.floor((diff / (1000 * 60)) % 60);
+        timerElem.innerText = `${days}d ${String(hours).padStart(2, '0')}h ${String(mins).padStart(2, '0')}m`;
+      }
+      updateTimer();
+      setInterval(updateTimer, 60000);
+    }
+
+    function initSpaceCanvas() {
+      const canvas = document.getElementById('space-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width = canvas.width = window.innerWidth;
+      let height = canvas.height = window.innerHeight;
+
+      window.addEventListener('resize', () => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      });
+
+      const particles = [];
+      const numParticles = 60;
+      for (let i = 0; i < numParticles; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: Math.random() * 1.5 + 0.5,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.3,
+          alpha: Math.random() * 0.6 + 0.2
+        });
+      }
+
+      function animateParticles() {
+        requestAnimationFrame(animateParticles);
+        ctx.clearRect(0, 0, width, height);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < 0) p.x = width;
+          if (p.x > width) p.x = 0;
+          if (p.y < 0) p.y = height;
+          if (p.y > height) p.y = 0;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(255, 42, 117, ${p.alpha})`;
+          ctx.fill();
+        });
+      }
+      animateParticles();
+    }
+
+    // Inicialización global al cargar DOM
+    document.addEventListener('DOMContentLoaded', () => {
+      loadLogsFromStorage();
+      window.updateYearFilters();
+      renderLogs('ALL');
+      startMatrixTransmission();
+      renderDynamicBiometrics();
+      initHudTimer();
+      initSpaceCanvas();
+      window.attachSpotlightListeners();
+      window.attachButtonRipples();
+      window.loadSlot(0, false);
+
+      bgAudio.addEventListener('ended', () => {
+        window.nextSlot();
+      });
+    });
+  </script>
+
+  <!-- ========================= -->
+  <!-- Firebase modular SDK -->
+  <!-- ========================= -->
+  <script type="module">
+    // Import modular SDK from CDN
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getFirestore, collection, doc, onSnapshot, setDoc, serverTimestamp, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
+
+    // Tu configuración (la que pegaste)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBx1j_UlQ4dTcVhH1qFIwRq0A6Ynxl97w0",
+      authDomain: "amorcito1209-cf81c.firebaseapp.com",
+      projectId: "amorcito1209-cf81c",
+      storageBucket: "amorcito1209-cf81c.firebasestorage.app",
+      messagingSenderId: "46648518991",
+      appId: "1:46648518991:web:f19e7734f7c2a240df7d3a",
+      measurementId: "G-3WYLC6V9RW"
+    };
+
+    // Inicializar Firebase
+    const app = initializeApp(firebaseConfig);
+    try {
+      getAnalytics(app);
+    } catch (e) {
+      // analytics solo si está disponible (no crítico)
+      console.log("Analytics no inicializado:", e);
+    }
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Estado global accesible desde scripts no-modulares
+    window.firebaseReady = false;
+    window.firebaseDB = db;
+
+    // Función para suscribirse a la colección 'logs' en tiempo real
+    let unsubscribe = null;
+    function subscribeLogsRealtime() {
+      if (unsubscribe) unsubscribe();
+
+      // Orden no estricto; Firestore no requiere ordering, usamos orderBy updatedAt si existe
+      const q = query(collection(db, 'logs'));
+      unsubscribe = onSnapshot(q, snapshot => {
+        const remote = [];
+        snapshot.forEach(docSnap => {
+          const data = docSnap.data();
+          // Use doc id if item doesn't include id
+          const item = { ...(data || {}), id: data && data.id ? data.id : docSnap.id };
+          remote.push(item);
+        });
+        // Guardar remote como fuente de verdad local
+        window.logsData = remote;
+        // Mantener caché local
+        localStorage.setItem('cyber_romance_logs', JSON.stringify(remote));
+        // Actualizar UI
+        try {
+          window.updateYearFilters();
+          window.renderLogs(window.activeYearFilter || 'ALL');
+          console.log("Firestore: logs sincronizados (snapshot).");
+        } catch (e) {
+          console.error("Error al actualizar UI tras snapshot:", e);
+        }
+      }, err => {
+        console.error("Error snapshot logs:", err);
+      });
+    }
+
+    // Subir/actualizar un log en Firestore usando log.id como doc id
+    window.pushLogToFirestore = async function(log) {
+      if (!log || !log.id) return;
+      try {
+        const docRef = doc(db, 'logs', log.id);
+        const payload = { ...log, updatedAt: serverTimestamp() };
+        await setDoc(docRef, payload, { merge: true });
+        console.log("Firestore: log guardado", log.id);
+      } catch (e) {
+        console.error("Error subiendo log a Firestore:", e);
+      }
+    };
+
+    // Opcional: eliminar log remoto
+    window.deleteLogFromFirestore = async function(logId) {
+      if (!logId) return;
+      try {
+        await deleteDoc(doc(db, 'logs', logId));
+        console.log("Firestore: log eliminado", logId);
+      } catch (e) {
+        console.error("Error eliminando log en Firestore:", e);
+      }
+    };
+
+    // Sign in anonymously and subscribe
+    signInAnonymously(auth)
+      .then(() => {
+        console.log("Firebase Auth: signed in anonymously");
+        window.firebaseReady = true;
+        subscribeLogsRealtime();
+      })
+      .catch(err => {
+        console.error("Firebase Auth error (anonymous):", err);
+      });
+
+    // También reaccionamos al estado de auth por si quieres mostrar UI distinta
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        // user.uid disponible
+        console.log("Auth state changed: signed in", user.uid);
+      } else {
+        console.log("Auth state changed: signed out");
+      }
+    });
+  </script>
+</body>
+</html>
