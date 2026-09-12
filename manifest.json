@@ -1,0 +1,17 @@
+{
+  "name": "Anniversary Archive",
+  "short_name": "CyberHub",
+  "description": "Cápsula del tiempo",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0a0f",
+  "theme_color": "#ff2a75",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "fotos/icono-app.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
