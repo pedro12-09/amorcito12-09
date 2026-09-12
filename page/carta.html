@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Una Carta para Ti 🌸</title>
+  <!-- Google Fonts: Dancing Script (Manuscrita), Playfair Display (Serif), Courier Prime (Máquina de escribir) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================
+       VARIABLES Y ESTILOS GLOBALES (Coquette Style)
+       ========================================== */
+    :root {
+      --bg-cream: #faf5ef;
+      --paper-parchment: #fffdf9;
+      --sakura-pink: #f8c8dc;
+      --sakura-light: #fde8f0;
+      --sakura-dark: #e89ebc;
+      --leaf-green: #c8e6c9;
+      --leaf-green-subtle: #e8f5e9;
+      --cherry-red: #c0392b;
+      --text-color: #4a3e3d;
+      --accent-gold: #d4af37;
+      --shadow-romantic: 0 10px 30px rgba(232, 158, 188, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      /* Patrón discreto de cerezas de fondo */
+      background-image: radial-gradient(var(--sakura-pink) 0.75px, transparent 0.75px), radial-gradient(var(--sakura-pink) 0.75px, var(--bg-cream) 0.75px);
+      background-size: 30px 30px;
+      background-position: 0 0, 15px 15px;
+      color: var(--text-color);
+      font-family: 'Playfair Display', serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ==========================================
+       PETALOS Y DECORACIONES FLOTANTES
+       ========================================== */
+    #petals-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    .petal {
+      position: absolute;
+      background-color: var(--sakura-pink);
+      border-radius: 15px 0 15px 0;
+      opacity: 0.7;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(-10vh) rotate(0deg) scale(0.8);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(105vh) rotate(360deg) scale(1.2);
+        opacity: 0.2;
+      }
+    }
+
+    /* Ilustraciones de Esquinas (Tulipanes) */
+    .corner-tulip {
+      position: fixed;
+      width: 120px;
+      height: 120px;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.85;
+    }
+    .tulip-top-left { top: 10px; left: 10px; }
+    .tulip-top-right { top: 10px; right: 10px; transform: scaleX(-1); }
+    .tulip-bottom-left { bottom: 10px; left: 10px; transform: scaleY(-1); }
+    .tulip-bottom-right { bottom: 10px; right: 10px; transform: scale(-1); }
+
+    /* ==========================================
+       CONTENEDOR PRINCIPAL
+       ========================================== */
+    .landing-card {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 2;
+    }
+
+    /* ==========================================
+       1. ENCABEZADO: SOBRE VIRTUAL INTERACTIVO
+       ========================================== */
+    .envelope-section {
+      text-align: center;
+      margin-bottom: 2rem;
+      cursor: pointer;
+      perspective: 1000px;
+    }
+
+    .envelope-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.8rem;
+      color: var(--cherry-red);
+      margin-bottom: 0.5rem;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+    }
+
+    .envelope-subtitle {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.95rem;
+      color: var(--text-color);
+      letter-spacing: 1px;
+      margin-bottom: 1.5rem;
+    }
+
+    .envelope-box {
+      width: 280px;
+      height: 180px;
+      background-color: var(--sakura-light);
+      border: 2px solid var(--sakura-dark);
+      border-radius: 8px;
+      position: relative;
+      margin: 0 auto;
+      box-shadow: var(--shadow-romantic);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .envelope-box:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(232, 158, 188, 0.4);
+    }
+
+    .envelope-seal {
+      width: 50px;
+      height: 50px;
+      background-color: var(--cherry-red);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 10px rgba(192, 57, 43, 0.3);
+      z-index: 3;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-box:hover .envelope-seal {
+      transform: scale(1.15) rotate(10deg);
+    }
+
+    .cherry-accent {
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      width: 40px;
+      height: 40px;
+    }
+
+    /* ==========================================
+       2. CUERPO DE LA CARTA (Papel Pergamino)
+       ========================================== */
+    .letter-paper {
+      background-color: var(--paper-parchment);
+      border: 1px solid #f0e6df;
+      border-radius: 12px;
+      padding: 3.5rem 3rem;
+      box-shadow: var(--shadow-romantic), inset 0 0 80px rgba(248, 200, 220, 0.15);
+      position: relative;
+      width: 100%;
+      background-image: linear-gradient(#f7f0ea 1px, transparent 1px);
+      background-size: 100% 2.2rem;
+      line-height: 2.2rem;
+      margin-top: 1rem;
+    }
+
+    /* Sello postal romántico decorativo */
+    .postage-stamp {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      width: 70px;
+      height: 85px;
+      background-color: #fff;
+      border: 2px dashed var(--sakura-dark);
+      padding: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(4deg);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .postage-stamp span {
+      font-size: 1.8rem;
+    }
+
+    .postage-stamp p {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.55rem;
+      color: var(--cherry-red);
+      text-transform: uppercase;
+      margin-top: 2px;
+      line-height: 1;
+    }
+
+    .letter-header-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3rem;
+      color: var(--cherry-red);
+      margin-bottom: 2rem;
+      font-weight: 700;
+    }
+
+    .letter-body-text {
+      font-family: 'Courier Prime', monospace;
+      font-size: 1.05rem;
+      color: #3a3333;
+      text-align: justify;
+      margin-bottom: 2.5rem;
+      white-space: pre-line;
+    }
+
+    .letter-body-text::first-letter {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3.5rem;
+      float: left;
+      line-height: 1;
+      padding-right: 8px;
+      color: var(--cherry-red);
+    }
+
+    /* ==========================================
+       3. GALERÍA DE RECUERDOS
+       ========================================== */
+    .gallery-section {
+      width: 100%;
+      margin: 2.5rem 0 1.5rem 0;
+      position: relative;
+    }
+
+    .gallery-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.2rem;
+      color: var(--text-color);
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      padding: 0.5rem;
+    }
+
+    .polaroid-card {
+      background: white;
+      padding: 12px 12px 25px 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      border-radius: 2px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .polaroid-card:nth-child(1) { transform: rotate(-3deg); }
+    .polaroid-card:nth-child(2) { transform: rotate(2deg); }
+    .polaroid-card:nth-child(3) { transform: rotate(-2deg); }
+
+    .polaroid-card:hover {
+      transform: scale(1.05) rotate(0deg);
+      box-shadow: 0 12px 25px rgba(232, 158, 188, 0.3);
+      z-index: 4;
+    }
+
+    .photo-frame {
+      width: 100%;
+      height: 180px;
+      background-color: var(--sakura-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 2px;
+      position: relative;
+    }
+
+    .photo-placeholder-icon {
+      font-size: 3rem;
+      opacity: 0.7;
+    }
+
+    .polaroid-caption {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.2rem;
+      text-align: center;
+      color: var(--text-color);
+      margin-top: 10px;
+    }
+
+    .fallen-petal {
+      position: absolute;
+      top: -8px;
+      right: 10px;
+      width: 20px;
+      height: 20px;
+      background-color: var(--sakura-pink);
+      border-radius: 12px 0 12px 0;
+      transform: rotate(25deg);
+      opacity: 0.85;
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* ==========================================
+       4. CARTAS ADICIONALES (10 SOBRES)
+       ========================================== */
+    .mini-letters-section {
+      margin-top: 3.5rem;
+      border-top: 1px dotted var(--sakura-dark);
+      padding-top: 2rem;
+    }
+
+    .mini-letters-title {
+      text-align: center;
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.2rem;
+      color: var(--cherry-red);
+      margin-bottom: 2.5rem;
+    }
+
+    .envelopes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 3rem 1.5rem;
+      justify-items: center;
+    }
+
+    .mini-envelope {
+      width: 130px;
+      height: 85px;
+      background-color: var(--sakura-light);
+      border: 2px solid var(--sakura-dark);
+      border-radius: 6px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 4px 10px rgba(232, 158, 188, 0.2);
+    }
+
+    .mini-envelope:hover {
+      transform: translateY(-5px) scale(1.05);
+      box-shadow: 0 8px 20px rgba(232, 158, 188, 0.4);
+    }
+
+    .mini-envelope-seal {
+      background-color: var(--cherry-red);
+      color: white;
+      border-radius: 50%;
+      width: 26px;
+      height: 26px;
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .mini-envelope-label {
+      position: absolute;
+      bottom: -25px;
+      font-size: 0.85rem;
+      font-family: 'Courier Prime', monospace;
+      color: var(--text-color);
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* ==========================================
+       5. CONTADOR Y SPOTIFY
+       ========================================== */
+    .time-section {
+      margin-top: 4rem;
+      text-align: center;
+      border-top: 1px dotted var(--sakura-dark);
+      padding-top: 2rem;
+    }
+
+    .time-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.2rem;
+      color: var(--text-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .counter-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 2.5rem;
+    }
+
+    .counter-box {
+      background: white;
+      border: 2px dashed var(--sakura-dark);
+      padding: 12px 18px;
+      border-radius: 10px;
+      min-width: 80px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .counter-num {
+      font-size: 2rem;
+      font-family: 'Playfair Display', serif;
+      color: var(--cherry-red);
+      font-weight: bold;
+      line-height: 1;
+      margin-bottom: 5px;
+    }
+
+    .counter-label {
+      font-size: 0.8rem;
+      font-family: 'Courier Prime', monospace;
+      text-transform: uppercase;
+      color: var(--text-color);
+      letter-spacing: 1px;
+    }
+
+    .spotify-container {
+      width: 100%;
+      max-width: 450px;
+      margin: 0 auto 2rem auto;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    /* ==========================================
+       6. PIE DE PÁGINA (Botón interactivo / Dedicatoria)
+       ========================================== */
+    .letter-footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 2rem;
+      border-top: 1px dashed var(--sakura-dark);
+      padding-top: 2rem;
+    }
+
+    .interactive-btn {
+      background: linear-gradient(135deg, var(--sakura-pink), var(--sakura-dark));
+      color: white;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      padding: 0.9rem 2rem;
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 6px 18px rgba(232, 158, 188, 0.4);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .interactive-btn:hover {
+      background: linear-gradient(135deg, var(--sakura-dark), var(--cherry-red));
+      transform: translateY(-2deg);
+      box-shadow: 0 8px 22px rgba(192, 57, 43, 0.3);
+    }
+
+    .interactive-btn:active {
+      transform: translateY(1deg);
+    }
+
+    .final-dedication {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.8rem;
+      color: var(--cherry-red);
+      margin-top: 1.8rem;
+      text-align: center;
+    }
+
+    /* ==========================================
+       7. MODAL DE CARTA EN BLANCO (AHORA ES DE SOLO LECTURA)
+       ========================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(250, 245, 239, 0.85);
+      backdrop-filter: blur(5px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 1rem;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-paper {
+      background-color: var(--paper-parchment);
+      border-radius: 12px;
+      padding: 3rem 2rem;
+      width: 100%;
+      max-width: 650px;
+      box-shadow: var(--shadow-romantic), inset 0 0 50px rgba(248, 200, 220, 0.1);
+      position: relative;
+      background-image: linear-gradient(#f7f0ea 1px, transparent 1px);
+      background-size: 100% 2.2rem;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .modal-overlay.active .modal-paper {
+      transform: scale(1);
+    }
+
+    .close-modal-btn {
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      background: none;
+      border: none;
+      font-size: 2.5rem;
+      cursor: pointer;
+      color: var(--cherry-red);
+      font-family: 'Courier Prime', monospace;
+      line-height: 1;
+    }
+
+    .modal-header-title {
+      font-family: 'Dancing Script', cursive;
+      font-size: 2.5rem;
+      color: var(--cherry-red);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    /* Modificado: Contenedor de texto en lugar de textarea */
+    .modal-text-content {
+      width: 100%;
+      height: 350px;
+      overflow-y: auto;
+      background: transparent;
+      border: none;
+      font-family: 'Courier Prime', monospace;
+      font-size: 1.05rem;
+      color: #3a3333;
+      line-height: 2.2rem;
+      white-space: pre-line; /* Respeta los saltos de línea automáticamente */
+      padding-right: 10px;
+    }
+
+    /* Estilo romántico para la barra de scroll */
+    .modal-text-content::-webkit-scrollbar {
+      width: 6px;
+    }
+    .modal-text-content::-webkit-scrollbar-thumb {
+      background-color: var(--sakura-dark);
+      border-radius: 10px;
+    }
+
+    #heart-toast {
+      position: fixed;
+      bottom: 30px;
+      background: white;
+      padding: 12px 24px;
+      border-radius: 25px;
+      border: 1px solid var(--sakura-pink);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.9rem;
+      color: var(--cherry-red);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    #heart-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .letter-paper, .modal-paper {
+        padding: 2rem 1.5rem;
+      }
+      .letter-header-title {
+        font-size: 2.3rem;
+      }
+      .envelope-title {
+        font-size: 2.2rem;
+      }
+      .corner-tulip {
+        width: 80px;
+        height: 80px;
+      }
+      .envelopes-grid {
+        gap: 2.5rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PÉTALOS FLOTANTES CAÍDOS (JS) -->
+  <div id="petals-container"></div>
+
+  <!-- ILUSTRACIONES DE TULIPANES EN LAS ESQUINAS (SVG) -->
+  <svg class="corner-tulip tulip-top-left" viewBox="0 0 100 100" fill="none">
+    <path d="M30 70 Q 20 40 40 20 Q 50 35 40 70 Z" fill="#f8c8dc" />
+    <path d="M40 70 Q 60 30 50 15 Q 35 30 40 70 Z" fill="#e89ebc" />
+    <path d="M25 85 Q 30 65 38 70 Q 30 90 25 85 Z" fill="#c8e6c9" />
+  </svg>
+
+  <svg class="corner-tulip tulip-top-right" viewBox="0 0 100 100" fill="none">
+    <path d="M30 70 Q 20 40 40 20 Q 50 35 40 70 Z" fill="#f8c8dc" />
+    <path d="M40 70 Q 60 30 50 15 Q 35 30 40 70 Z" fill="#e89ebc" />
+    <path d="M25 85 Q 30 65 38 70 Q 30 90 25 85 Z" fill="#c8e6c9" />
+  </svg>
+
+  <svg class="corner-tulip tulip-bottom-left" viewBox="0 0 100 100" fill="none">
+    <path d="M30 70 Q 20 40 40 20 Q 50 35 40 70 Z" fill="#f8c8dc" />
+    <path d="M40 70 Q 60 30 50 15 Q 35 30 40 70 Z" fill="#e89ebc" />
+    <path d="M25 85 Q 30 65 38 70 Q 30 90 25 85 Z" fill="#c8e6c9" />
+  </svg>
+
+  <svg class="corner-tulip tulip-bottom-right" viewBox="0 0 100 100" fill="none">
+    <path d="M30 70 Q 20 40 40 20 Q 50 35 40 70 Z" fill="#f8c8dc" />
+    <path d="M40 70 Q 60 30 50 15 Q 35 30 40 70 Z" fill="#e89ebc" />
+    <path d="M25 85 Q 30 65 38 70 Q 30 90 25 85 Z" fill="#c8e6c9" />
+  </svg>
+
+  <!-- LANDING PAGE PRINCIPAL -->
+  <main class="landing-card">
+
+    <!-- 1. ENCABEZADO: SOBRE VIRTUAL -->
+    <header class="envelope-section" onclick="scrollToLetter()">
+      <h1 class="envelope-title">Una carta para ti</h1>
+      <h2 class="envelope-title">12/08/2026</h2>
+      <p class="envelope-subtitle">Haz clic en este sobre para enseñarte mi corazón 💌</p>
+      
+      <div class="envelope-box">
+        <div class="envelope-seal">♥</div>
+        
+        <!-- Ilustración discreta de Cereza -->
+        <svg class="cherry-accent" viewBox="0 0 50 50" fill="none">
+          <circle cx="18" cy="32" r="10" fill="#c0392b"/>
+          <circle cx="34" cy="35" r="9" fill="#a93226"/>
+          <circle cx="15" cy="29" r="3" fill="#f1948a"/>
+          <path d="M18 22 C 20 10, 28 8, 28 4" stroke="#7d6608" stroke-width="2" fill="none"/>
+          <path d="M34 26 C 30 15, 28 8, 28 4" stroke="#7d6608" stroke-width="2" fill="none"/>
+          <path d="M28 4 Q 35 2 38 8 Q 30 8 28 4 Z" fill="#c8e6c9"/>
+        </svg>
+      </div>
+    </header>
+
+    <!-- 2. CUERPO DE LA CARTA (Parchment Container) -->
+    <article class="letter-paper" id="letter-content">
+      
+      <!-- Sello Postal -->
+      <div class="postage-stamp">
+        <span>🌸</span>
+        <p>Amour</p>
+        <p>2026</p>
+      </div>
+
+      <h2 class="letter-header-title">Mi amorcito 🩷</h2>
+
+      <div class="letter-body-text">
+Si el tiempo se detuviera cada vez que pienso en ti, viviríamos en un eterno atardecer. Hay abrazos que se sienten como llegar a casa, y tú eres exactamente eso: mi lugar seguro, mi calma en medio del caos y el detalle más bonito que la vida me ha regalado.
+
+Gracias por cada risa compartida, por la complicidad silenciosa y por hacer que lo cotidiano se vuelva extraordinario. Eres la poesía más dulce escrita en el idioma de mi corazón. Nunca es demasiado tarde para darte todo el amor que te mereces recibir y merezco darte.
+      </div>
+
+      <!-- 4. CARTAS ADICIONALES (AHORA CON TEXTO OCULTO PARA RELLENAR) -->
+      <section class="mini-letters-section">
+        <h3 class="mini-letters-title">Abre una cuando... 💌</h3>
+        <div class="envelopes-grid">
+          
+          <!-- Carta 1 -->
+          <div class="mini-envelope" onclick="openModal('Para cuando me extrañes', 'texto-carta-1')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #1</span>
+            <div id="texto-carta-1" style="display: none;">
+              Si estás abriendo esto, es porque la distancia pesa un poquito más hoy, pero quiero que cierres los ojos un segundo. Imagínate que estoy ahí, sosteniéndote la mano o abrazándote fuerte. La distancia es solo un número en el mapa, porque en mi mente y en mi corazón tú estás conmigo todo el tiempo. Te amo más de lo que las palabras pueden decir.
+            </div>
+          </div>
+          
+          <!-- Carta 2 -->
+          <div class="mini-envelope" onclick="openModal('Para cuando estés triste', 'texto-carta-2')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #2</span>
+            <div id="texto-carta-2" style="display: none;">
+              Mi vida, odio la idea de que estés pasando por un momento difícil y no poder estar ahí físicamente para secar tus lágrimas. Respira hondo. Eres una persona increíble, fuerte y con un corazón enorme. Esto que sientes hoy va a pasar, y mientras tanto, recuerda que mi amor por ti no cambia ni un poquito, sin importar los kilómetros. Te mando un beso gigante para apapachar tu alma.
+            </div>
+          </div>
+          
+          <!-- Carta 3 -->
+          <div class="mini-envelope" onclick="openModal('Para cuando estés feliz', 'texto-carta-3')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #3</span>
+            <div id="texto-carta-3" style="display: none;">
+              ¡Esa sonrisa tuya ilumina todo! Me hace tan feliz saber que estás pasando por un momento bonito. Disfrútalo al máximo, ríete fuerte y guarda esa energía en tu memoria. Verte bien y saber que estás contenta es lo mejor que me puede pasar en el día. ¡Te mereces todas las cosas hermosas del mundo!
+            </div>
+          </div>
+          
+          <!-- Carta 4 -->
+          <div class="mini-envelope" onclick="openModal('Para cuando no puedas dormir', 'texto-carta-4')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #4</span>
+            <div id="texto-carta-4" style="display: none;">
+              Si la noche está muy silenciosa y los pensamientos no te dejan descansar, lee esto: piensa en todas las cosas bonitas que nos esperan, en las risas que nos faltan por reír y en los abrazos que nos vamos a dar. Cierra tus ojos y descansa, yo estoy cuidando de ti desde aquí. Que tengas los sueños más dulces del mundo, mi amor.
+            </div>
+          </div>
+          
+          <!-- Carta 5 -->
+          <div class="mini-envelope" onclick="openModal('Para nuestro aniversario', 'texto-carta-5')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #5</span>
+            <div id="texto-carta-5" style="display: none;">
+              ¡Feliz aniversario, mi amor! Mirar atrás y ver todo lo que hemos construido, superado y compartido me llena de orgullo y de una felicidad inmensa. Gracias por elegirme todos los días, por tu paciencia, tu ternura y por ser mi hogar favorito. Esto es apenas el comienzo de una historia hermosa. Te amo hoy, mañana y siempre.
+            </div>
+          </div>
+          
+          <!-- Carta 6 -->
+          <div class="mini-envelope" onclick="openModal('Para cuando dudes de mi amor', 'texto-carta-6')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #6</span>
+            <div id="texto-carta-6" style="display: none;">
+              Si en algún momento la incertidumbre o el cansancio te hacen dudar, léelo bien: te amo. No hay un solo día en el que no piense en ti, en tu futuro, en nosotros. Eres la persona con la que quiero compartir mi vida entera. Mi corazón tiene tu nombre grabado y de ahí no te vas a mover jamás.
+            </div>
+          </div>
+          
+          <!-- Carta 7 -->
+          <div class="mini-envelope" onclick="openModal('Para cuando tengamos una pelea', 'texto-carta-7')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #7</span>
+            <div id="texto-carta-7" style="display: none;">
+              Si estamos pasando por un momento de tensión o desacuerdo, quiero que sepas algo importante: para mí, lo nuestro siempre está por encima de cualquier orgullo o discusión. Prefiero mil veces resolver las cosas hablando, abrazarnos y entender tu punto de vista, porque lo que más me importa en esta vida eres tú y nuestra paz. Te amo, y sé que juntos podemos con esto y más.
+            </div>
+          </div>
+          
+          <!-- Carta 8 -->
+          <div class="mini-envelope" onclick="openModal('Para cuando necesites un abrazo', 'texto-carta-8')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #8</span>
+            <div id="texto-carta-8" style="display: none;">
+              Imagínate que te tomo de la cintura, te pego a mi pecho y te doy el abrazo más largo, cálido y apretado del mundo. Ese en el que los problemas se desconectan y el tiempo se detiene. Respira hondo, mi amor. Estoy contigo, siempre.
+            </div>
+          </div>
+          
+          <!-- Carta 9 -->
+          <div class="mini-envelope" onclick="openModal('Para cuando te sientas sin motivación', 'texto-carta-9')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #9</span>
+            <div id="texto-carta-9" style="display: none;">
+              A veces el mundo pesa un poco y las fuerzas flaquean, pero quiero recordarte lo capaz y brillante que eres. No tienes que comerte el mundo hoy; con que des un pasito a la vez, es más que suficiente. Estoy súper orgulloso de todo lo que haces y de la mujer tan trabajadora que eres. ¡Tú puedes con todo!
+            </div>
+          </div>
+          
+          <!-- Carta 10 -->
+          <div class="mini-envelope" onclick="openModal('Para que la abras ahora mismo', 'texto-carta-10')">
+            <div class="mini-envelope-seal">♥</div>
+            <span class="mini-envelope-label">Carta #10</span>
+            <div id="texto-carta-10" style="display: none;">
+              No necesitas estar triste, extrañándome o sin dormir para leer esto. Solo quería recordarte, de la nada, que eres lo mejor que me ha pasado. Gracias por existir, por llenar mis días de luz y por dejarme ser parte de tu vida. Te amo con todo mi ser, hoy, mañana y siempre. ♡
+            </div>
+          </div>
+          
+        </div>
+      </section>
+
+      <!-- 5. CONTADOR DE TIEMPO Y SPOTIFY -->
+      <section class="time-section">
+        <h3 class="time-title">Tiempo amándonos ⏳</h3>
+        
+        <div class="counter-container">
+          <div class="counter-box">
+            <div class="counter-num" id="c-days">00</div>
+            <div class="counter-label">Días</div>
+          </div>
+          <div class="counter-box">
+            <div class="counter-num" id="c-hours">00</div>
+            <div class="counter-label">Horas</div>
+          </div>
+          <div class="counter-box">
+            <div class="counter-num" id="c-mins">00</div>
+            <div class="counter-label">Min</div>
+          </div>
+          <div class="counter-box">
+            <div class="counter-num" id="c-secs">00</div>
+            <div class="counter-label">Seg</div>
+          </div>
+        </div>
+
+        <div class="spotify-container">
+          <!-- Reproductor de Spotify incrustado -->
+          <iframe 
+            src="https://open.spotify.com/embed/playlist/5gXvJUlgDuRMex9aaXTcJN?si=KmD1M-qpQAKvV2o87-seNA&utm_source=copy-link&pi=-3w4aaJ1TzyzK&sci=spotify%3Acard-config%3A16CcpIr4J1O1e0etg8HFJm" 
+            width="100%" 
+            height="152" 
+            frameBorder="0" 
+            allowfullscreen="" 
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+            loading="lazy">
+          </iframe>
+        </div>
+      </section>
+
+      <!-- 6. PIE DE PÁGINA INTERACTIVO -->
+      <footer class="letter-footer">
+        <button class="interactive-btn" onclick="sendLoveEffect()">
+          <span>Enviar un abrazo virtual</span>
+          <span>💋</span>
+        </button>
+
+        <p class="final-dedication">
+          Con todo mi amor, siempre tuya/o. ♡
+        </p>
+      </footer>
+
+    </article>
+  </main>
+
+  <!-- MODAL FLOTANTE PARA CARTAS (AHORA MUESTRA EL TEXTO) -->
+  <div class="modal-overlay" id="letter-modal">
+    <div class="modal-paper">
+      <button class="close-modal-btn" onclick="closeModal()">×</button>
+      <h2 class="modal-header-title" id="modal-title">Título de la carta</h2>
+      <!-- Aquí se inyectará el texto que hayas dejado escrito en el div oculto -->
+      <div class="modal-text-content" id="modal-content"></div>
+    </div>
+  </div>
+
+  <!-- Notificación flotante al hacer clic -->
+  <div id="heart-toast">¡Te he enviado mil besos y abrazos! 🌸✨</div>
+
+  <!-- JAVASCRIPT: LÓGICA E INTERACTIVIDAD -->
+  <script>
+    // Generar pétalos de cerezo flotando dinámicamente
+    function createPetals() {
+      const container = document.getElementById('petals-container');
+      const petalCount = 15;
+
+      for (let i = 0; i < petalCount; i++) {
+        const petal = document.createElement('div');
+        petal.classList.add('petal');
+        
+        // Tamaños y posiciones aleatorias
+        const size = Math.random() * 12 + 8; 
+        petal.style.width = `${size}px`;
+        petal.style.height = `${size * 1.2}px`;
+        petal.style.left = `${Math.random() * 100}%`;
+        
+        // Animación con tiempos variados
+        const duration = Math.random() * 6 + 6; 
+        const delay = Math.random() * 5;
+        petal.style.animationDuration = `${duration}s`;
+        petal.style.animationDelay = `${delay}s`;
+
+        container.appendChild(petal);
+      }
+    }
+
+    // Desplazamiento suave hacia la carta
+    function scrollToLetter() {
+      const letter = document.getElementById('letter-content');
+      letter.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Efecto interactivo al presionar el botón final
+    function sendLoveEffect() {
+      const toast = document.getElementById('heart-toast');
+      toast.classList.add('show');
+
+      // Crear explosión de mini corazones
+      for (let i = 0; i < 12; i++) {
+        createFloatingHeart();
+      }
+
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3500);
+    }
+
+    function createFloatingHeart() {
+      const heart = document.createElement('div');
+      heart.innerHTML = '💖';
+      heart.style.position = 'fixed';
+      heart.style.bottom = '80px';
+      heart.style.left = `${Math.random() * 80 + 10}%`;
+      heart.style.fontSize = `${Math.random() * 20 + 15}px`;
+      heart.style.pointerEvents = 'none';
+      heart.style.zIndex = '1000';
+      heart.style.transition = 'all 2s ease-out';
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.style.transform = `translateY(-150px) scale(1.5)`;
+        heart.style.opacity = '0';
+      }, 50);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 2000);
+    }
+
+    // Funciones del Modal Modificadas
+    function openModal(title, textId) {
+      // 1. Pone el título
+      document.getElementById('modal-title').innerText = title;
+      // 2. Extrae el texto del div oculto correspondiente
+      const contenidoCarta = document.getElementById(textId).innerHTML;
+      // 3. Pega el texto en la hoja del modal
+      document.getElementById('modal-content').innerHTML = contenidoCarta;
+      // 4. Muestra la ventana
+      document.getElementById('letter-modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('letter-modal').classList.remove('active');
+    }
+
+    // Lógica del Contador de Tiempo Juntos
+    // IMPORTANTE: Modifica esta fecha (Año-Mes-Día) por la fecha de tu aniversario
+    const startDate = new Date('2025-09-12T11:59:00').getTime(); 
+
+    function updateCounter() {
+      const now = new Date().getTime();
+      const diff = now - startDate;
+      
+      if (diff > 0) {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        document.getElementById('c-days').innerText = days;
+        document.getElementById('c-hours').innerText = hours < 10 ? '0' + hours : hours;
+        document.getElementById('c-mins').innerText = minutes < 10 ? '0' + minutes : minutes;
+        document.getElementById('c-secs').innerText = seconds < 10 ? '0' + seconds : seconds;
+      }
+    }
+
+    // Inicializar efectos al cargar la página
+    document.addEventListener('DOMContentLoaded', () => {
+      createPetals();
+      updateCounter();
+      setInterval(updateCounter, 1000);
+    });
+  </script>
+</body>
+</html>
