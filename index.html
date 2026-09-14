@@ -1589,6 +1589,7 @@
     import {
       getFirestore, collection, getDocs, addDoc, updateDoc, doc
     } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
+    import { getStorage, ref as storageRef, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-storage.js";
 
     // ---------- Firebase config (tal como lo diste) ----------
     const firebaseConfig = {
@@ -1604,6 +1605,52 @@
     // Inicializar Firebase y Firestore
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // =========================================================
+    // UTILIDADES DE PROTECCIÓN PARA FIRESTORE Y STORAGE
+    // =========================================================
+    // Limpia propiedades undefined antes de enviar a Firestore
+    function cleanForFirestore(obj) {
+      const clean = {};
+      Object.entries(obj).forEach(([k, v]) => {
+        if (v !== undefined) clean[k] = v;
+      });
+      return clean;
+    }
+
+    // Sube una imagen tipo data URL a Firebase Storage y devuelve la URL pública
+    async function uploadImageIfDataUrl(dataUrl, targetPath) {
+      try {
+        if (!dataUrl || !dataUrl.startsWith('data:')) return null;
+        const ref = storageRef(storage, targetPath);
+        // uploadString con 'data_url'
+        await uploadString(ref, dataUrl, 'data_url');
+        const url = await getDownloadURL(ref);
+        return url;
+      } catch (e) {
+        console.warn('Error subiendo imagen a Storage:', e);
+        return null;
+      }
+    }
+
+    // Exportar backup (usado si localStorage está lleno)
+    function exportLogsBackup(text) {
+      try {
+        const data = text || JSON.stringify(logsData || []);
+        const blob = new Blob([data], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'cyber_romance_logs_backup.json';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      } catch (e) {
+        console.warn('No se pudo exportar backup automáticamente:', e);
+      }
+    }
 
     // =========================================================
     // ESTRUCTURA DE DATOS INICIALES Y PERSISTENCIA (LOCALSTORAGE)
@@ -1637,6 +1684,16 @@
         localStorage.setItem('cyber_romance_logs', JSON.stringify(logsData));
       } catch (e) {
         console.warn('No se pudo guardar en localStorage:', e);
+        // Detectar QuotaExceeded y exportar backup automático
+        try {
+          const isQuota = (e && (e.name === 'QuotaExceededError' || e.name === 'NS_ERROR_DOM_QUOTA_REACHED' || e.code === 22));
+          if (isQuota) {
+            exportLogsBackup(JSON.stringify(logsData));
+            alert('localStorage lleno: he exportado un backup llamado cyber_romance_logs_backup.json. Libera espacio o elimina imágenes base64 grandes.');
+          }
+        } catch (ex) {
+          console.warn('Error manejando QuotaExceeded:', ex);
+        }
       }
     }
 
@@ -1796,7 +1853,7 @@
       const yearsArray = Array.from(yearsSet).filter(y => y !== 'ALL');
       yearsArray.sort((a, b) => parseInt(a) - parseInt(b));
 
-      let navHtml = `<button class="year-btn ${activeYearFilter === 'ALL' ? 'active' : ''}" onclick="window.filterYear('ALL')">TODOS</button>`;
+      let navHtml = `<button class="year-btn ${activeYearFilter === 'ALL' ? 'active' : ''}" onclick="window.filterYear('ALL')">TODOS</button>`;  
       yearsArray.forEach(y => {
         const isActive = activeYearFilter === y ? 'active' : '';
         navHtml += `<button class="year-btn ${isActive}" onclick="window.filterYear('${y}')">${y}</button>`;
@@ -1880,8 +1937,8 @@
         if (annivLog.image) {
           document.getElementById('cms-img-preview-tag').src = annivLog.image;
           document.getElementById('cms-img-preview').style.display = 'block';
-          currentUploadedImageBase64 = annivLog.image;
-          document.getElementById('cms-img-url').value = '';
+          currentUploadedImageBase64 = annivLog.image && annivLog.image.startsWith('data:') ? annivLog.image : null;
+          document.getElementById('cms-img-url').value = annivLog.image && !annivLog.image.startsWith('data:') ? annivLog.image : '';
         } else {
           document.getElementById('cms-img-preview').style.display = 'none';
           currentUploadedImageBase64 = null;
@@ -1982,9 +2039,36 @@
         year = match ? match[1] : new Date().getFullYear().toString();
       }
 
-      const finalImg = currentUploadedImageBase64 || pastedImgUrl || null;
       const now = new Date();
       const exactTimeStr = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+
+      // Preparar finalImg: si currentUploadedImageBase64 es data: => intentar subir a Storage
+      let finalImg = null;
+      let imagePending = false;
+
+      if (currentUploadedImageBase64 && currentUploadedImageBase64.startsWith('data:')) {
+        // Construir path temporal predecible
+        const tempIdForImage = (cmsEditingLogId || `tmp-${Date.now()}`);
+        const ext = currentUploadedImageBase64.split(';')[0].split('/')[1] || 'jpg';
+        const path = `logs-images/${tempIdForImage}_${Date.now()}.${ext}`;
+        try {
+          const uploadedUrl = await uploadImageIfDataUrl(currentUploadedImageBase64, path);
+          if (uploadedUrl) {
+            finalImg = uploadedUrl;
+          } else {
+            // Si falla la subida, no guardamos base64 en Firestore ni en localStorage
+            finalImg = null;
+            imagePending = true;
+            alert('No se pudo subir la imagen al Storage. La imagen no será guardada en el documento ahora, pero permanecerá como pendiente localmente.');
+          }
+        } catch (e) {
+          console.warn('Error subiendo imagen en saveNewLog:', e);
+          finalImg = null;
+          imagePending = true;
+        }
+      } else if (pastedImgUrl) {
+        finalImg = pastedImgUrl;
+      }
 
       if (cmsEditingLogId) {
         // Editar registro existente
@@ -1992,7 +2076,7 @@
         if (existingIndex !== -1) {
           const keep = {
             locked: logsData[existingIndex].locked || false,
-            pin: logsData[existingIndex].pin || undefined,
+            pin: logsData[existingIndex].pin, // puede ser undefined
             isExternalPage: logsData[existingIndex].isExternalPage || undefined,
             docId: logsData[existingIndex].docId || undefined
           };
@@ -2008,22 +2092,39 @@
             urlLabel: urlLabel || 'ABRIR RECURSO EXTERNO ↗',
             image: finalImg,
             locked: keep.locked,
-            pin: keep.pin,
             isExternalPage: keep.isExternalPage,
             id: logsData[existingIndex].id // conservar id lógico
           };
+
+          // Mantener pin SOLO si existe (no incluir undefined)
+          if (keep.pin !== undefined) {
+            updated.pin = keep.pin;
+          }
+
+          // Si la imagen no pudo subirse y viene pendiente, marcar el flag para intentar luego
+          if (imagePending) {
+            updated.imagePending = true;
+          } else {
+            delete updated.imagePending;
+          }
 
           // Intentar actualizar Firestore si tiene docId
           try {
             if (keep.docId) {
               const docRef = doc(db, 'logs', keep.docId);
-              await updateDoc(docRef, {
-                ...updated
-              });
+              const payload = cleanForFirestore(updated);
+              await updateDoc(docRef, payload);
               updated.docId = keep.docId;
             }
           } catch (e) {
             console.warn('Falló actualización en Firestore (se mantendrá en local):', e);
+            // No abortamos; los cambios quedan en local
+          }
+
+          // Evitar almacenar data: URLs en logsData (si hubo algún fallback)
+          if (updated.image && typeof updated.image === 'string' && updated.image.startsWith('data:')) {
+            updated.image = null;
+            updated.imagePending = true;
           }
 
           logsData[existingIndex] = updated;
@@ -2042,9 +2143,13 @@
             locked: false,
             image: finalImg
           };
+
+          if (imagePending) newLog.imagePending = true;
+
           // Guardar en Firestore si posible
           try {
-            const ref = await addDoc(collection(db, 'logs'), newLog);
+            const payload = cleanForFirestore(newLog);
+            const ref = await addDoc(collection(db, 'logs'), payload);
             newLog.docId = ref.id;
           } catch (e) {
             console.warn('No se pudo guardar en Firestore (se guardará localmente):', e);
@@ -2067,12 +2172,21 @@
           image: finalImg
         };
 
+        if (imagePending) newLog.imagePending = true;
+
         // Intentar guardar en Firestore
         try {
-          const ref = await addDoc(collection(db, 'logs'), newLog);
+          const payload = cleanForFirestore(newLog);
+          const ref = await addDoc(collection(db, 'logs'), payload);
           newLog.docId = ref.id;
         } catch (e) {
           console.warn('No se pudo guardar en Firestore (se guardará localmente):', e);
+        }
+
+        // Evitar guardar data: URLs en localStorage
+        if (newLog.image && typeof newLog.image === 'string' && newLog.image.startsWith('data:')) {
+          newLog.image = null;
+          newLog.imagePending = true;
         }
 
         logsData.push(newLog);
