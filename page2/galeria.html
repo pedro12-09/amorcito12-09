@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GX // NEON GALLERY MATRIX</title>
+    <!-- Fuentes estilo Gaming / Tech -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==========================================================================
+           VARIABLES DE DISEÑO (ESTILO OPERA GX & THEMES)
+           ========================================================================== */
+        :root[data-theme="dark"] {
+            --bg-main: #08060c;
+            --bg-panel: #130f1c;
+            --bg-card: #1c162b;
+            --accent-pink: #ff007f;
+            --accent-cyan: #00f0ff;
+            --accent-glow: rgba(255, 0, 127, 0.6);
+            --accent-glow-strong: rgba(255, 0, 127, 0.95);
+            --text-main: #ffffff;
+            --text-muted: #a49bbb;
+            --border-neon: #ff007f;
+            --scanline-opacity: 0.15;
+            --grid-line: rgba(255, 0, 127, 0.1);
+        }
+
+        :root[data-theme="light"] {
+            --bg-main: #fff0f5; /* Rosa Pastel Claro */
+            --bg-panel: #ffe2ec;
+            --bg-card: #ffd1e1;
+            --accent-pink: #ff5a9e; /* Rosa Neón Suave */
+            --accent-cyan: #ff2a85;
+            --accent-glow: rgba(255, 90, 158, 0.4);
+            --accent-glow-strong: rgba(255, 90, 158, 0.8);
+            --text-main: #3d1e28;
+            --text-muted: #8c5b6c;
+            --border-neon: #ff80bf;
+            --scanline-opacity: 0.03;
+            --grid-line: rgba(255, 90, 158, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-image: 
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Scanlines FX */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: repeating-linear-gradient(0deg, rgba(0, 0, 0, var(--scanline-opacity)), rgba(0, 0, 0, var(--scanline-opacity)) 1px, transparent 1px, transparent 2px);
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* ==========================================================================
+           HEADER OPERA GX STYLE
+           ========================================================================== */
+        header {
+            background: var(--bg-panel);
+            border-bottom: 2px solid var(--border-neon);
+            box-shadow: 0 0 20px var(--accent-glow);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 15px) 100%, 0 100%);
+        }
+
+        .brand-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            font-size: 1.6rem;
+            letter-spacing: 2px;
+            color: var(--text-main);
+            text-shadow: 0 0 10px var(--accent-glow-strong);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-logo span {
+            color: var(--accent-pink);
+            background: var(--accent-pink);
+            color: var(--bg-main);
+            padding: 2px 8px;
+            clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+        }
+
+        /* Botón Fluorescente de Cambio de Tema */
+        .theme-toggle-btn {
+            font-family: 'Orbitron', sans-serif;
+            background: transparent;
+            border: 2px solid var(--border-neon);
+            color: var(--text-main);
+            padding: 8px 18px;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .theme-toggle-btn:hover {
+            background: var(--accent-pink);
+            color: var(--bg-main);
+            box-shadow: 0 0 25px var(--accent-glow-strong);
+            transform: translateY(-2px);
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border-neon);
+            color: var(--text-muted);
+            padding: 8px 16px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+        }
+
+        .nav-btn.active, .nav-btn:hover {
+            color: #fff;
+            background: var(--accent-pink);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* ==========================================================================
+           MAIN CONTAINER & SECTIONS
+           ========================================================================== */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-transform: uppercase;
+            border-left: 4px solid var(--accent-pink);
+            padding-left: 12px;
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        .gallery-section {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-neon);
+            padding: 2rem;
+            margin-bottom: 3rem;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.4);
+            clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+        }
+
+        /* ==========================================================================
+           SECCIÓN 1: GRID MATRIX CON FILTROS (REJILLA DINÁMICA)
+           ========================================================================== */
+        .filter-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            background: transparent;
+            border: 1px solid var(--border-neon);
+            color: var(--text-main);
+            padding: 6px 14px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .filter-btn.active, .filter-btn:hover {
+            background: var(--accent-pink);
+            color: #fff;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+
+        .grid-matrix {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-neon);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            height: 250px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .grid-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .grid-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .grid-card-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+            padding: 1rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .grid-card:hover .grid-card-overlay {
+            transform: translateY(0);
+        }
+
+        .grid-card:hover {
+            box-shadow: 0 0 20px var(--accent-glow-strong);
+            transform: translateY(-5px);
+        }
+
+        /* ==========================================================================
+           SECCIÓN 2: CYBER CAROUSEL SLIDER (DESLIZADOR CIBERNÉTICO)
+           ========================================================================== */
+        .carousel-wrapper {
+            position: relative;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 20px;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .carousel-card {
+            min-width: 320px;
+            height: 380px;
+            background: var(--bg-card);
+            border: 2px solid var(--border-neon);
+            position: relative;
+            flex-shrink: 0;
+            clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%);
+        }
+
+        .carousel-card img {
+            width: 100%;
+            height: 70%;
+            object-fit: cover;
+        }
+
+        .carousel-info {
+            padding: 1rem;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            align-items: center;
+        }
+
+        .cyber-arrow {
+            background: var(--bg-card);
+            border: 1px solid var(--border-neon);
+            color: var(--accent-pink);
+            font-size: 1.5rem;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .cyber-arrow:hover {
+            background: var(--accent-pink);
+            color: #fff;
+            box-shadow: 0 0 20px var(--accent-glow-strong);
+        }
+
+        /* ==========================================================================
+           SECCIÓN 3: DUAL TECH INSPECTOR (VISOR DUAL DETALLADO)
+           ========================================================================== */
+        .inspector-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .inspector-container { grid-template-columns: 1fr; }
+        }
+
+        .main-display {
+            background: var(--bg-card);
+            border: 2px solid var(--border-neon);
+            height: 450px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        }
+
+        .main-display img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .main-display-info {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: rgba(10, 8, 18, 0.85);
+            backdrop-filter: blur(5px);
+            padding: 1rem;
+            border-top: 1px solid var(--border-neon);
+        }
+
+        .thumbnail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 450px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .thumb-item {
+            display: flex;
+            gap: 10px;
+            background: var(--bg-card);
+            border: 1px solid transparent;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .thumb-item img {
+            width: 70px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        .thumb-item.active, .thumb-item:hover {
+            border-color: var(--border-neon);
+            box-shadow: 0 0 12px var(--accent-glow);
+            background: rgba(255, 0, 127, 0.1);
+        }
+
+        /* ==========================================================================
+           LIGHTBOX MODAL INTERACTIVO
+           ========================================================================== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            max-width: 85%;
+            max-height: 85%;
+            border: 2px solid var(--border-neon);
+            box-shadow: 0 0 30px var(--accent-glow-strong);
+            position: relative;
+            background: var(--bg-panel);
+        }
+
+        .modal-content img {
+            max-width: 100%;
+            max-height: 75vh;
+            display: block;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: -20px; right: -20px;
+            background: var(--accent-pink);
+            color: #fff;
+            border: none;
+            width: 40px; height: 40px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* Badge Tag styling */
+        .tag {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            background: var(--accent-pink);
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER / OPERA GX BAR -->
+    <header>
+        <div class="brand-logo">
+            <span>GS</span>LOVE GALLERY
+        </div>
+        
+        <div class="nav-tabs">
+            <button class="nav-btn active" onclick="scrollToSection('sec-grid')">GRID MATRIX</button>
+            <button class="nav-btn" onclick="scrollToSection('sec-carousel')">SLIDER</button>
+            <button class="nav-btn" onclick="scrollToSection('sec-inspector')">INSPECTOR</button>
+        </div>
+
+        <button class="theme-toggle-btn" id="themeToggle">
+            MODE: PINK DARK
+        </button>
+    </header>
+
+    <div class="container">
+
+        <!-- ===================================================================
+             SECCIÓN 1: REJILLA DE FILTRADO CON MODAL (GRID MATRIX)
+             =================================================================== -->
+        <section id="sec-grid" class="gallery-section">
+            <h2 class="section-title">PORTAL TERNURITA</h2>
+            
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterGrid('all')">[TODAS]</button>
+                <button class="filter-btn" onclick="filterGrid('minecraft')">MINECRAFT</button>
+                <button class="filter-btn" onclick="filterGrid('nosotros')">NOSOTROS</button>
+                <button class="filter-btn" onclick="filterGrid('destacados')">DESTACADOS</button>
+            </div>
+
+            <div class="grid-matrix" id="gridMatrixContainer">
+                <!-- Se renderiza dinámicamente desde JS -->
+            </div>
+        </section>
+
+
+        <!-- ===================================================================
+             SECCIÓN 2: DESLIZADOR HORIZONTAL (CYBER SLIDER)
+             =================================================================== -->
+        <section id="sec-carousel" class="gallery-section">
+            <h2 class="section-title">LOVE CAROUSEL</h2>
+            
+            <div class="carousel-wrapper">
+                <div class="carousel-track" id="carouselTrack">
+                    <!-- Se renderiza dinámicamente desde JS -->
+                </div>
+            </div>
+
+            <div class="carousel-controls">
+                <button class="cyber-arrow" onclick="moveCarousel(-1)">&lt;</button>
+                <span id="carouselIndex" style="font-family:'Orbitron'; font-weight:bold;">01 / 05</span>
+                <button class="cyber-arrow" onclick="moveCarousel(1)">&gt;</button>
+            </div>
+        </section>
+
+
+        <!-- ===================================================================
+             SECCIÓN 3: VISOR DUAL TÉCNICO (DUAL INSPECTOR)
+             =================================================================== -->
+        <section id="sec-inspector" class="gallery-section">
+            <h2 class="section-title">AMORCHITO CON ROPITA DE PIG</h2>
+            
+            <div class="inspector-container">
+                <div class="main-display">
+                    <img id="inspectorMainImg" src="" alt="Main Display">
+                    <div class="main-display-info">
+                        <span class="tag" id="inspectorTag">TAG</span>
+                        <h3 id="inspectorTitle" style="font-family:'Orbitron';">Cargando...</h3>
+                        <p id="inspectorDesc" style="color: var(--text-muted); font-size:0.9rem;">Cargando descripción...</p>
+                    </div>
+                </div>
+
+                <div class="thumbnail-list" id="inspectorThumbnails">
+                    <!-- Se renderiza dinámicamente desde JS -->
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- LIGHTBOX MODAL -->
+    <div class="modal" id="photoModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <img id="modalImage" src="" alt="Ampliada">
+            <div style="padding: 1rem;">
+                <h3 id="modalTitle" style="font-family: 'Orbitron'; color: var(--accent-pink);"></h3>
+                <p id="modalDesc" style="color: var(--text-muted);"></p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =======================================================================
+         JAVASCRIPT CON SLOTS DE DATOS SEPARADOS E INDEPENDIENTES
+         ======================================================================= -->
+    <script>
+        /* ====================================================================
+           SLOTS DE FOTOS INDEPENDIENTES PARA CADA SECCIÓN
+           ==================================================================== */
+
+        // 1. Fotos independientes para Sección 1 (Grid Matrix)
+        const GRID_DATA = [
+            {
+                id: 101,
+                title: "Mi amorcito y yo en Cerecita",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/59b7f7d1-8ffe-48cd-b979-08784a0494ec.jpeg",
+                desc: "Campo de tulipanes en Cerecita"
+            },
+            {
+                id: 102,
+                title: "Bosque Místico Pastel",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/b28e2128-cea2-447b-8608-56c28d80f1c6.jpeg",
+                desc: "Senderos entre niebla suave y tonos naturales."
+            },
+            {
+                id: 103,
+                title: "Vórtice Neón Digital",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/d3b10757-b453-4d6a-b280-294b0a6fd9df.jpeg",
+                desc: "Estructuras abstractas con renderizado synthwave."
+            },
+            {
+                id: 104,
+                title: "Arquitectura Tokio GX",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/9d3ca9b9-a257-45ae-b5c1-03a9350d13d6.jpeg",
+                desc: "Rascacielos iluminados con tonos rosa y violeta."
+            },
+            {
+                id: 105,
+                title: "Flor de Neón Orgánica",
+                category: "minecraft",
+                url: "...",
+                desc: "Detalle macro floral bajo iluminación fluorescente."
+            },
+            {
+                id: 106,
+                title: "Geometría Fluorescente",
+                category: "minecraft",
+                url: "...",
+                desc: "Render 3D abstracto estilo interfaz cyber."
+            },
+            {
+                id: 107,
+                title: "Geometría Fluorescente",
+                category: "minecraft",
+                url: "...",
+                desc: "Render 3D abstracto estilo interfaz cyber."
+            },
+            {
+                id: 108,
+                title: "Geometría Fluorescente",
+                category: "minecraft",
+                url: "...",
+                desc: "Render 3D abstracto estilo interfaz cyber."
+            },
+            {
+                id: 109,
+                title: "Geometría Fluorescente",
+                category: "minecraft",
+                url: "...",
+                desc: "Render 3D abstracto estilo interfaz cyber."
+            },
+            {
+                id: 110,
+                title: "Geometría Fluorescente",
+                category: "minecraft",
+                url: "...",
+                desc: "Render 3D abstracto estilo interfaz cyber."
+            },
+            {
+                id: 111,
+                title: "Geometría Fluorescente",
+                category: "minecraft",
+                url: "...",
+                desc: "Render 3D abstracto estilo interfaz cyber."
+            },
+            {
+                id: 111,
+                title: "Geometría Fluorescente",
+                category: "minecraft",
+                url: "...",
+                desc: "Render 3D abstracto estilo interfaz cyber."
+            }
+        ];
+
+        // 2. Fotos independientes para Sección 2 (Cyber Carousel Slider)
+        const CAROUSEL_DATA = [
+            {
+                id: 201,
+                title: "Neon Highway Pass",
+                category: "cyberpunk",
+                url: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80",
+                desc: "Autopista nocturna con trazos de luz fluorescente."
+            },
+            {
+                id: 202,
+                title: "Synthwave Sunset",
+                category: "nature",
+                url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+                desc: "Atardecer tropical bajo paletas de color retrofuturistas."
+            },
+            {
+                id: 203,
+                title: "Cyber Samurai Concept",
+                category: "abstract",
+                url: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80",
+                desc: "Arte conceptual con estética futurista magenta."
+            },
+            {
+                id: 204,
+                title: "Matrix Nexus Stream",
+                category: "cyberpunk",
+                url: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+                desc: "Flujos de datos e interfaz cibernética en alta definición."
+            },
+            {
+                id: 201,
+                title: "Neon Highway Pass",
+                category: "cyberpunk",
+                url: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80",
+                desc: "Autopista nocturna con trazos de luz fluorescente."
+            },
+            {
+                id: 202,
+                title: "Synthwave Sunset",
+                category: "nature",
+                url: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+                desc: "Atardecer tropical bajo paletas de color retrofuturistas."
+            },
+            {
+                id: 203,
+                title: "Cyber Samurai Concept",
+                category: "abstract",
+                url: "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80",
+                desc: "Arte conceptual con estética futurista magenta."
+            },
+            {
+                id: 204,
+                title: "Matrix Nexus Stream",
+                category: "cyberpunk",
+                url: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+                desc: "Flujos de datos e interfaz cibernética en alta definición."
+            }
+        ];
+
+        // 3. Fotos independientes para Sección 3 (Dual Inspector)
+        const INSPECTOR_DATA = [
+            {
+                id: 301,
+                title: "PHOTO 1",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/fa85ffe4-1b8f-4bd6-a3ec-6fbccd7a24f5.jpeg",
+                desc: "Núcleo de procesamiento con iluminación de estado sólido."
+            },
+            {
+                id: 302,
+                title: "PHOTO 2",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/82c2b583-cf8d-425d-9aa9-87d84301c4b1.jpeg",
+                desc: "Proyección holográfica interactiva estilo HUD."
+            },
+            {
+                id: 303,
+                title: "PHOTO 3",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/92c8e66d-15fb-49a7-8bfc-0321515e277e.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 4",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/2d6ce0c3-eb62-4f81-ab2c-978ad658dc12.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 5",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/c194e313-e02e-471c-b1af-b35673cdfb80.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 6",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/6e5afc4f-800f-4fa7-baff-063e3d8f1e4b.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 7",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/2e2d3f4a-6fe5-441e-9c16-0260699b8cb1.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 8",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/Screenshot_2025-12-20-02-45-53-699_com.mojang.mine12111401.jpg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 9",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/Screenshot_2026-04-19-09-15-53-669_com.mojang.minecraftpe.jpg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 10",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/piggylove/IMG_20260914_193859.jpg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 11",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/433a6f6f-ac72-4ce2-88c8-d6374d2ab9cd.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 12",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/7649d2fd-f8f0-408c-a7b7-eb1531c9eaee.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 13",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/aaff0fc9-c350-4048-9a78-3b6c277f7438.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 14",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/dbdea315-dd31-4edf-98e9-5c826d50a1a9.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 15",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/b71da21c-709e-4532-ae77-cab31968e37c.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            },
+            {
+                id: 303,
+                title: "PHOTO 16",
+                category: "minecraft",
+                url: "https://raw.githubusercontent.com/pedro12-09/amorcito12-09/refs/heads/main/page2/mc/9cae13d0-e263-d61b-80bf-b949bda3fbd7.jpeg",
+                desc: "Módulo espacial orbitando bajo auroras de neón."
+            }
+        ];
+
+        /* ====================================================================
+           1. INICIALIZACIÓN Y SECCIÓN 1: GRID MATRIX
+           ==================================================================== */
+        const gridContainer = document.getElementById('gridMatrixContainer');
+
+        function renderGrid(filter = 'all') {
+            gridContainer.innerHTML = '';
+            const filtered = filter === 'all' ? GRID_DATA : GRID_DATA.filter(item => item.category === filter);
+            
+            filtered.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'grid-card';
+                card.onclick = () => openModal(item);
+                card.innerHTML = `
+                    <img src="${item.url}" alt="${item.title}" loading="lazy">
+                    <div class="grid-card-overlay">
+                        <span class="tag">${item.category}</span>
+                        <h4 style="font-family:'Orbitron'; font-size:1rem;">${item.title}</h4>
+                    </div>
+                `;
+                gridContainer.appendChild(card);
+            });
+        }
+
+        function filterGrid(category) {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderGrid(category);
+        }
+
+        /* ====================================================================
+           2. SECCIÓN 2: CYBER CAROUSEL
+           ==================================================================== */
+        const carouselTrack = document.getElementById('carouselTrack');
+        let currentCarouselIndex = 0;
+
+        function renderCarousel() {
+            carouselTrack.innerHTML = '';
+            CAROUSEL_DATA.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'carousel-card';
+                card.onclick = () => openModal(item);
+                card.innerHTML = `
+                    <img src="${item.url}" alt="${item.title}">
+                    <div class="carousel-info">
+                        <span class="tag">${item.category}</span>
+                        <h4 style="font-family:'Orbitron';">${item.title}</h4>
+                        <p style="color:var(--text-muted); font-size:0.85rem;">${item.desc}</p>
+                    </div>
+                `;
+                carouselTrack.appendChild(card);
+            });
+            updateCarouselPosition();
+        }
+
+        function moveCarousel(direction) {
+            const maxIndex = CAROUSEL_DATA.length - 1;
+            currentCarouselIndex += direction;
+            if (currentCarouselIndex < 0) currentCarouselIndex = maxIndex;
+            if (currentCarouselIndex > maxIndex) currentCarouselIndex = 0;
+            updateCarouselPosition();
+        }
+
+        function updateCarouselPosition() {
+            const cardWidth = 340; // Ancho de tarjeta + espacio
+            carouselTrack.style.transform = `translateX(-${currentCarouselIndex * cardWidth}px)`;
+            document.getElementById('carouselIndex').innerText = `${String(currentCarouselIndex + 1).padStart(2, '0')} / ${String(CAROUSEL_DATA.length).padStart(2, '0')}`;
+        }
+
+        /* ====================================================================
+           3. SECCIÓN 3: DUAL INSPECTOR
+           ==================================================================== */
+        const thumbList = document.getElementById('inspectorThumbnails');
+
+        function renderInspector() {
+            thumbList.innerHTML = '';
+            INSPECTOR_DATA.forEach((item, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = `thumb-item ${index === 0 ? 'active' : ''}`;
+                thumb.onclick = () => selectInspectorItem(index, thumb);
+                thumb.innerHTML = `
+                    <img src="${item.url}" alt="${item.title}">
+                    <div>
+                        <strong style="font-size:0.9rem;">${item.title}</strong>
+                        <div style="font-size:0.75rem; color:var(--text-muted);">${item.category}</div>
+                    </div>
+                `;
+                thumbList.appendChild(thumb);
+            });
+            // Cargar primero por defecto de la lista INSPECTOR_DATA
+            if (INSPECTOR_DATA.length > 0) {
+                selectInspectorItem(0, thumbList.children[0]);
+            }
+        }
+
+        function selectInspectorItem(index, element) {
+            document.querySelectorAll('.thumb-item').forEach(t => t.classList.remove('active'));
+            if(element) element.classList.add('active');
+
+            const item = INSPECTOR_DATA[index];
+            document.getElementById('inspectorMainImg').src = item.url;
+            document.getElementById('inspectorTitle').innerText = item.title;
+            document.getElementById('inspectorDesc').innerText = item.desc;
+            document.getElementById('inspectorTag').innerText = item.category;
+        }
+
+        /* ====================================================================
+           4. MODAL & THEME TOGGLE (OSCURO NEÓN VS ROSA PASTEL)
+           ==================================================================== */
+        function openModal(item) {
+            document.getElementById('modalImage').src = item.url;
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalDesc').innerText = item.desc;
+            document.getElementById('photoModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('photoModal').style.display = 'none';
+        }
+
+        // Toggle Theme Logic
+        const themeBtn = document.getElementById('themeToggle');
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            if (currentTheme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'light');
+                themeBtn.innerText = 'MODE: PASTEL PINK';
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                themeBtn.innerText = 'MODE: DARK PINK';
+            }
+        });
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Carga inicial al iniciar la página
+        window.onload = () => {
+            renderGrid();
+            renderCarousel();
+            renderInspector();
+        };
+    </script>
+</body>
+</html>
